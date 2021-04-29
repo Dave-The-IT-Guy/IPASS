@@ -27,6 +27,7 @@ def dvdl_show_menu():
 
 #At boot code
 #TODO: Check if program is interactive or not
+#TODO: Show program version/information
 #TODO: Check if the logfile exists
 #TODO: Read entire log file and put it in a dictonairy?
 
