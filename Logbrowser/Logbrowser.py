@@ -29,19 +29,26 @@ def dvdl_show_menu():
     #Ask which option needs to be selected
     choice = input("Make your choice: ")
 
+    #If one of the first choices were selected then...
     if choice == "1" or choice == "2":
+        #Let the user know the program is generating the requested info
         print("\nGenerating...\n")
 
+        #Check which parameter the function needs and call the function
         if choice == "1":
             results = dvdl_top10_inlog(file="openvpn.log", unsuccessful=False)
-
         else:
             results = dvdl_top10_inlog(file="openvpn.log", unsuccessful=True)
 
+        #A counter to show the positions
         position = 0
+
+        #Loop trough the results...
         for result in results:
+            #Add one to count
             position += 1
 
+            #And show it to the user
             print(f"{position}: {result[0]} ({result[1]} try's)")
 
     elif choice == "3":
