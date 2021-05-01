@@ -48,8 +48,13 @@ def dvdl_show_menu():
             #Add one to count
             position += 1
 
+            #Check if it needs to be try or try's
+            word = "try\'s"
+            if result[1] == 1:
+                word = "try"
+
             #And show it to the user
-            print(f"{position}: {result[0]} ({result[1]} try's)")
+            print(f"{position}: {result[0]} ({result[1]} {word})")
 
     elif choice == "3":
         pass
@@ -69,7 +74,23 @@ def dvdl_show_menu():
         print(f"{result} connection(s) weren't made with the OpenVPN protocol")
 
     elif choice == "6":
-        pass
+        results = dvdl_used_managemend_commands(logfile)
+
+        # A counter to show the positions
+        position = 0
+
+        # Loop trough the results...
+        for result in results:
+            # Add one to count
+            position += 1
+
+            #Check if it needs to be time or times
+            word = "times"
+            if result[1] == 1:
+                word = "time"
+
+            #And show it to the user
+            print(f"{position}: {result[0]} (used {result[1]} {word})")
 
     elif choice == "7":
         pass
@@ -192,8 +213,64 @@ def dvdl_non_ovpn_prot_counter(file):
     #Filter the logfile
     connections = dvdl_filter_logfile(file, filter1="Non-OpenVPN client protocol detected")
 
-    #Since one entry is one hit, take the lenght of the list and return it
+    #Since one entry is one hit, take the lenght of the list and return it (number)
     return len(connections)
+
+
+#
+def dvdl_used_managemend_commands(file):
+    # Filter the logfile
+    logdata = dvdl_filter_logfile(file, filter1="MANAGEMENT: CMD")
+
+    # Make an empty dictionairy to count the management commands
+    counter = {}
+
+    for logline in logdata:
+        # Extract the management command from the string...
+        command = (re.findall(r"\'.*\'", logline))[0]  # To test: https://regex101.com/
+        #Remove the ' characters from the string
+        command = command.replace("\'", "")
+
+
+        # If the command is already in the dictionairy than add 1
+        if command in counter:
+            i = counter.get(command)
+            i += 1
+            counter.update({command: i})
+
+        # If the command isn't in the dictionairy than add it
+        else:
+            counter.update({command: 1})
+
+    # Source: https://stackabuse.com/how-to-sort-dictionary-by-value-in-python/
+
+    # Create an empty dictionairy to store the sorted values in
+    sorted_counter = {}
+
+    # Create an list with only sorted values
+    sorted_counter_values = sorted(counter, key=counter.get, reverse=True)
+
+    # Find the right key by the value
+    for item in sorted_counter_values:
+        sorted_counter[item] = counter[item]
+
+    # Create an empty list to store the result
+    result = []
+
+    # Grab all keys from the dictionairy and put them in a list
+    keys = list(sorted_counter.keys())
+    # Grab all values from the dictionairy and put them in a list
+    values = list(sorted_counter.values())
+
+    # Create a top 10
+    for i in range(0, len(counter)):
+        result.append([keys[i], values[i]])
+
+    # Return the result (list)
+    return result
+
+
+
 
 ##########Run at boot code##########
 
