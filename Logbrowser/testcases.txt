@@ -1,0 +1,4 @@
+Wat gebeurt er als er een een lege logfile ingestopt wordt
+wat gebeurt er met de top x als er niet genoeg resultaten zijn
+Wat gebeurt er als er geen resultaten zijn
+Heel veel IP's testen voor optie 7

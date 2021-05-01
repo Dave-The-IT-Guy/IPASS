@@ -117,7 +117,7 @@ def dvdl_menu_handler(logfile, choice):
             print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}")
 
     elif choice == "8":
-        pass
+        dvdl_show_all_new_ips(logfile=logfile, ipfile="knownip.txt")
 
     elif choice == "9":
         pass
@@ -189,7 +189,7 @@ def dvdl_top10_inlog(file, unsuccessful):
     #Loop trough all filtered results
     for string in filtered:
         #Extract the IP-address from the string...
-        ip = (re.findall(r"\b(?:[0-9]{1,3}\.){3}(?:[0-9]{1,3})\b", string))[0] #To test: https://regex101.com/
+        ip = (re.findall(r"\b(?:[0-9]{1,3}\.){3}(?:[0-9]{1,3}){1}\b", string))[0] #To test: https://regex101.com/
 
         #If the IP is already in the dictionairy than add 1
         if ip in counter:
@@ -301,7 +301,6 @@ def dvdl_check_ip(file, ip):
         #Regex to check if the IP is valid
         ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}[\.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}\b", ip) # To test: https://regex101.com/
 
-
         #If the IP is not valid...
         if ip == []:
             #Let the user know the IP was incorrect
@@ -309,7 +308,7 @@ def dvdl_check_ip(file, ip):
             #Since the IP was incorrect there's nothing to return
             return None
 
-        #Revert the list to the IP address
+        #Revert the list to a single IP
         ip = ip[0]
 
     # Get all successful attempts form the logfile
@@ -323,6 +322,45 @@ def dvdl_check_ip(file, ip):
 
     #Return the result (list)
     return [ip, successful_attempts, unsuccessful_attempts, (successful_attempts + unsuccessful_attempts)]
+
+
+#Show all the new IP addresses
+def dvdl_show_all_new_ips(logfile, **kwargs):
+    ipfile = kwargs.get("ipfile", "knownip.txt")
+
+    iplist = dvdl_filter_logfile(logfile)
+
+    while True:
+        try:
+            ips = []
+            with open(ipfile, "r") as knownips:
+                for ip in knownips:
+                    ips.append(ip.strip())
+
+                for string in iplist:
+                    ip = re.findall(r"\b(?:[0-9]{1,3}\.){3}(?:[0-9]{1,3}){1}\b", string)  # To test: https://regex101.com/
+
+
+                    if ip == []:
+                        pass
+                    else:
+                        ip = ip[0]
+
+                    if ip not in ips and ip != [] and ip != "":
+                        print(ip)
+                        ips.append(ip)
+
+                with open(ipfile, "w") as knownips:
+                    for ip in ips:
+                        if ip != []:
+                            knownips.write(f"{ip}\n")
+
+            break
+
+        #Handle error
+        except:
+            print("Cannot acces file. ")
+            exit()
 
 
 ##########Run at boot code##########
