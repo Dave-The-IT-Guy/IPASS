@@ -13,7 +13,7 @@ import re #For regex
 
 
 #This functions shows the menu
-def dvdl_show_menu():
+def dvdl_show_menu(logfile):
     print("\nHow may I assist you?\n"
     "1.  Show me the top 10 IP's with the most unsuccessful connections\n"
     "2.  Show me the top 10 IP's with most successful connections\n"
@@ -29,6 +29,14 @@ def dvdl_show_menu():
     #Ask which option needs to be selected
     choice = input("Make your choice: ")
 
+    #Start the function that handles the menu
+    dvdl_menu_handler(logfile, choice)
+
+    #Give the user time to check the data
+    input("Press return to continue...")
+
+
+def dvdl_menu_handler(logfile, choice):
     #If one of the first 2 choices were selected then...
     if choice == "1" or choice == "2":
         #Let the user know the program is generating the requested info
@@ -36,9 +44,13 @@ def dvdl_show_menu():
 
         #Check which parameter the function needs and call the function
         if choice == "1":
-            results = dvdl_top10_inlog(file=logfile, unsuccessful=False)
-        else:
             results = dvdl_top10_inlog(file=logfile, unsuccessful=True)
+            # Show the title
+            print(f"Top 10 unsuccessful connections:")
+        else:
+            results = dvdl_top10_inlog(file=logfile, unsuccessful=False)
+            # Show the title
+            print(f"Top 10 successful connections:")
 
         #A counter to show the positions
         position = 0
@@ -49,7 +61,7 @@ def dvdl_show_menu():
             position += 1
 
             #Check if it needs to be try or try's
-            word = "try\'s"
+            word = "try's"
             if result[1] == 1:
                 word = "try"
 
@@ -74,7 +86,7 @@ def dvdl_show_menu():
         print(f"{result} connection(s) weren't made with the OpenVPN protocol")
 
     elif choice == "6":
-        results = dvdl_used_managemend_commands(logfile)
+        results = dvdl_used_management_commands(logfile)
 
         # A counter to show the positions
         position = 0
@@ -93,7 +105,16 @@ def dvdl_show_menu():
             print(f"{position}: {result[0]} (used {result[1]} {word})")
 
     elif choice == "7":
-        pass
+        #Ask which IP needs to be checked
+        ip = input("Type an IP-address to check it: ")
+
+        #Call the function
+        results = dvdl_check_ip(logfile, ip)
+
+        #If the IP is valid than show the results
+        if results != None:
+            #Show the result to the user
+            print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}")
 
     elif choice == "8":
         pass
@@ -168,7 +189,7 @@ def dvdl_top10_inlog(file, unsuccessful):
     #Loop trough all filtered results
     for string in filtered:
         #Extract the IP-address from the string...
-        ip = (re.findall(r"\b(?:[0-9]{0,3}\.){3}(?:[0-9]{1,3})", string))[0] #To test: https://regex101.com/
+        ip = (re.findall(r"\b(?:[0-9]{1,3}\.){3}(?:[0-9]{1,3})\b", string))[0] #To test: https://regex101.com/
 
         #If the IP is already in the dictionairy than add 1
         if ip in counter:
@@ -217,8 +238,8 @@ def dvdl_non_ovpn_prot_counter(file):
     return len(connections)
 
 
-#
-def dvdl_used_managemend_commands(file):
+#Collect all used management commands
+def dvdl_used_management_commands(file):
     # Filter the logfile
     logdata = dvdl_filter_logfile(file, filter1="MANAGEMENT: CMD")
 
@@ -270,6 +291,38 @@ def dvdl_used_managemend_commands(file):
     return result
 
 
+#Check an IP-address for attempted connections
+def dvdl_check_ip(file, ip):
+    #If a star was given as IP than make it an empty string to filter succesfully
+    if ip == "*":
+        ip = ""
+    #If the wildcard was not provided check if the IP is valid
+    else:
+        #Regex to check if the IP is valid
+        ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}[\.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}\b", ip) # To test: https://regex101.com/
+
+
+        #If the IP is not valid...
+        if ip == []:
+            #Let the user know the IP was incorrect
+            print("Please provide a valid IP")
+            #Since the IP was incorrect there's nothing to return
+            return None
+
+        #Revert the list to the IP address
+        ip = ip[0]
+
+    # Get all successful attempts form the logfile
+    successful_attempts = len(dvdl_filter_logfile(file, type="and", filter1=ip, filter2="TLS: Initial packet"))
+    # Get all unsuccessful attempts form the logfile
+    unsuccessful_attempts = len(dvdl_filter_logfile(file, type="and", filter1=ip, filter2="AUTH_FAILED"))
+
+    #If no IP was given than put a star to indicate that all IP's are measured
+    if ip == "":
+        ip = "All IP-addresses"
+
+    #Return the result (list)
+    return [ip, successful_attempts, unsuccessful_attempts, (successful_attempts + unsuccessful_attempts)]
 
 
 ##########Run at boot code##########
@@ -282,4 +335,4 @@ def dvdl_used_managemend_commands(file):
 logfile = "openvpn.log"
 
 while True:
-    dvdl_show_menu()
+    dvdl_show_menu(logfile)
