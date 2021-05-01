@@ -36,9 +36,9 @@ def dvdl_show_menu():
 
         #Check which parameter the function needs and call the function
         if choice == "1":
-            results = dvdl_top10_inlog(file="openvpn.log", unsuccessful=False)
+            results = dvdl_top10_inlog(file=logfile, unsuccessful=False)
         else:
-            results = dvdl_top10_inlog(file="openvpn.log", unsuccessful=True)
+            results = dvdl_top10_inlog(file=logfile, unsuccessful=True)
 
         #A counter to show the positions
         position = 0
@@ -57,8 +57,16 @@ def dvdl_show_menu():
     elif choice == "4":
         pass
 
+    #If the user chose option 5 than...
     elif choice == "5":
-        pass
+        # Let the user know the program is generating the requested info
+        print("\nGenerating...\n")
+
+        #Call the right function...
+        result = dvdl_non_ovpn_prot_counter(file=logfile)
+
+        #And show the result
+        print(f"{result} connection(s) weren't made with the OpenVPN protocol")
 
     elif choice == "6":
         pass
@@ -179,11 +187,22 @@ def dvdl_top10_inlog(file, unsuccessful):
     return result
 
 
+#A function that determines how many connections weren't made with the OVPN protocol
+def dvdl_non_ovpn_prot_counter(file):
+    #Filter the logfile
+    connections = dvdl_filter_logfile(file, filter1="Non-OpenVPN client protocol detected")
+
+    #Since one entry is one hit, take the lenght of the list and return it
+    return len(connections)
+
 ##########Run at boot code##########
 
 
 #TODO: Check if program is interactive or not
 #TODO: Show program version/information
 #TODO: Check if the logfile exists
+
+logfile = "openvpn.log"
+
 while True:
     dvdl_show_menu()
