@@ -14,7 +14,7 @@ import re #For regex
 
 #This functions shows the menu
 def dvdl_show_menu():
-    print("How may I assist you?\n"
+    print("\nHow may I assist you?\n"
     "1.  Show me the top 10 IP's with the most unsuccessful connections\n"
     "2.  Show me the top 10 IP's with most successful connections\n"
     "3.  Show me the top 5 days with the most unsuccessful connections\n"
@@ -28,11 +28,55 @@ def dvdl_show_menu():
     "11. Close program\n")
     #Ask which option needs to be selected
     choice = input("Make your choice: ")
-    return
+
+    if choice == "1" or choice == "2":
+        print("\nGenerating...\n")
+
+        if choice == "1":
+            results = dvdl_top10_inlog(file="openvpn.log", unsuccessful=False)
+
+        else:
+            results = dvdl_top10_inlog(file="openvpn.log", unsuccessful=True)
+
+        position = 0
+        for result in results:
+            position += 1
+
+            print(f"{position}: {result[0]} ({result[1]} try's)")
+
+    elif choice == "3":
+        pass
+
+    elif choice == "4":
+        pass
+
+    elif choice == "5":
+        pass
+
+    elif choice == "6":
+        pass
+
+    elif choice == "7":
+        pass
+
+    elif choice == "8":
+        pass
+
+    elif choice == "9":
+        pass
+
+    elif choice == "10":
+        pass
+
+    elif choice == "11":
+        exit()
+
+    else:
+        print("You selected an invalid choice. Please try again")
 
 
 #Retrieve all data from the logfile and filter it
-def dvdl_filter_logfile(**kwargs):
+def dvdl_filter_logfile(file, **kwargs):
     #Retrieve the filtertype ("or" or "and")
     type = kwargs.get("type", "or")
     #Retrieve the first filter. If no filter was given then return all data
@@ -44,7 +88,7 @@ def dvdl_filter_logfile(**kwargs):
     result = []
 
     #Open the logfile
-    with open("openvpn.log", "r") as logfile:
+    with open(file, "r") as logfile:
         #If the filtertype is "or"...
         if type == "or":
             #Loop trough the file
@@ -71,16 +115,16 @@ def dvdl_filter_logfile(**kwargs):
 
 
 #This function makes a top 10 of the most (un)successful login attempts
-def dvdl_top10_inlog(unsuccessful):
+def dvdl_top10_inlog(file, unsuccessful):
     #If it needs to be an top 10 of unsuccessful attempts than...
     if unsuccessful:
         #Make a list of all unsuccessful attempts
-        filtered = dvdl_filter_logfile(filter1="AUTH_FAILED")
+        filtered = dvdl_filter_logfile(file, filter1="AUTH_FAILED")
 
     #If it needs to be an top 10 of successful attempts than...
     else:
         # Make a list of all successful attempts
-        filtered = dvdl_filter_logfile(filter1="TLS: Initial packet")
+        filtered = dvdl_filter_logfile(file, filter1="TLS: Initial packet")
 
     #Make an empty dictionairy to count the IP-addresses
     counter = {}
@@ -134,5 +178,5 @@ def dvdl_top10_inlog(unsuccessful):
 #TODO: Check if program is interactive or not
 #TODO: Show program version/information
 #TODO: Check if the logfile exists
-result = dvdl_top10_inlog(unsuccessful=True)
-print(result)
+while True:
+    dvdl_show_menu()
