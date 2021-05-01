@@ -5,6 +5,10 @@
 version = 0.1
 
 
+##########Imports##########
+import re #For regex
+
+
 ##########Functions##########
 
 
@@ -62,8 +66,66 @@ def dvdl_filter_logfile(**kwargs):
             print("Error in the filter function: Value of type variable isn't valid!")
             exit()
 
-        #Return the result
-        return (result)
+        #Return the result (list)
+        return result
+
+
+#This function makes a top 10 of the most (un)successful login attempts
+def dvdl_top10_inlog(unsuccessful):
+    #If it needs to be an top 10 of unsuccessful attempts than...
+    if unsuccessful:
+        #Make a list of all unsuccessful attempts
+        filtered = dvdl_filter_logfile(filter1="AUTH_FAILED")
+
+    #If it needs to be an top 10 of successful attempts than...
+    else:
+        # Make a list of all successful attempts
+        filtered = dvdl_filter_logfile(filter1="TLS: Initial packet")
+
+    #Make an empty dictionairy to count the IP-addresses
+    counter = {}
+
+    #Loop trough all filtered results
+    for string in filtered:
+        #Extract the IP-address from the string...
+        ip = (re.findall(r"\b(?:[0-9]{0,3}\.){3}(?:[0-9]{1,3})", string))[0] #To test: https://regex101.com/
+
+        #If the IP is already in the dictionairy than add 1
+        if ip in counter:
+            i = counter.get(ip)
+            i += 1
+            counter.update({ip: i})
+
+        # If the IP isn't in the dictionairy than add it
+        else:
+            counter.update({ip: 1})
+
+    #Source: https://stackabuse.com/how-to-sort-dictionary-by-value-in-python/
+    
+    #Create an empty dictionairy to store the sorted values in
+    sorted_counter = {}
+
+    #Create an list with only sorted values
+    sorted_counter_values = sorted(counter, key=counter.get, reverse=True)
+    
+    #Find the right key by the value
+    for item in sorted_counter_values:
+        sorted_counter[item] = counter[item]
+
+    #Create an empty list to store the result
+    result = []
+
+    #Grab all keys from the dictionairy and put them in a list
+    keys = list(sorted_counter.keys())
+    # Grab all values from the dictionairy and put them in a list
+    values = list(sorted_counter.values())
+
+    #Create a top 10
+    for i in range(0,10):
+        result.append([keys[i], values[i]])
+
+    #Return the result (list)
+    return result
 
 
 ##########Run at boot code##########
@@ -72,4 +134,5 @@ def dvdl_filter_logfile(**kwargs):
 #TODO: Check if program is interactive or not
 #TODO: Show program version/information
 #TODO: Check if the logfile exists
-dvdl_filter_logfile(type="or", filter1="TLS: Initial packet")
+result = dvdl_top10_inlog(unsuccessful=True)
+print(result)
