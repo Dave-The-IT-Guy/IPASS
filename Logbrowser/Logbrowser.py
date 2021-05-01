@@ -29,7 +29,7 @@ def dvdl_show_menu():
     #Ask which option needs to be selected
     choice = input("Make your choice: ")
 
-    #If one of the first choices were selected then...
+    #If one of the first 2 choices were selected then...
     if choice == "1" or choice == "2":
         #Let the user know the program is generating the requested info
         print("\nGenerating...\n")
