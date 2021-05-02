@@ -117,7 +117,7 @@ def dvdl_menu_handler(logfile, choice):
             print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}")
 
     elif choice == "8":
-        dvdl_show_all_new_ips(logfile=logfile, ipfile="knownip.txt")
+        dvdl_show_all_new_ips(logfile=logfile)
 
     elif choice == "9":
         pass
@@ -316,7 +316,7 @@ def dvdl_check_ip(file, ip):
     # Get all unsuccessful attempts form the logfile
     unsuccessful_attempts = len(dvdl_filter_logfile(file, type="and", filter1=ip, filter2="AUTH_FAILED"))
 
-    #If no IP was given than put a star to indicate that all IP's are measured
+    #If no IP was given then let the user know there was no filter applied
     if ip == "":
         ip = "All IP-addresses"
 
@@ -326,41 +326,105 @@ def dvdl_check_ip(file, ip):
 
 #Show all the new IP addresses
 def dvdl_show_all_new_ips(logfile, **kwargs):
-    ipfile = kwargs.get("ipfile", "knownip.txt")
+    #Get the filelocation
+    ipfile = kwargs.get("ipfile", "knowip.txt")
 
+    #Grab all IP's from the logfile
     iplist = dvdl_filter_logfile(logfile)
 
+    #Set the errormessage variable to true (shows errormessage if file is not found)
+    fnf = True
+
+    #Keep looping to give the user a chance to change the path of the file if the file could not be found
     while True:
+
+        #If the file can be opend...
         try:
+            #Keep track how many IP addresses are added
+            counter = 0
+
+            #Create an empty list for all IP's
             ips = []
+
+            #Open the file with known IP's...
             with open(ipfile, "r") as knownips:
+
+                #And add it to the list with the other IP's
                 for ip in knownips:
                     ips.append(ip.strip())
 
-                for string in iplist:
-                    ip = re.findall(r"\b(?:[0-9]{1,3}\.){3}(?:[0-9]{1,3}){1}\b", string)  # To test: https://regex101.com/
+            #Find all the IP's in the logfile
+            for string in iplist:
+                ip = re.findall(r"\b(?:[0-9]{1,3}\.){3}(?:[0-9]{1,3}){1}\b", string)  # To test: https://regex101.com/
 
+                #Sometimes the regex gives back an empty list.
+                if ip == []:
+                    pass
 
-                    if ip == []:
-                        pass
-                    else:
-                        ip = ip[0]
+                #Get the IP
+                else:
+                    ip = ip[0]
 
-                    if ip not in ips and ip != [] and ip != "":
-                        print(ip)
-                        ips.append(ip)
+                #If the IP is not in the list with known IP's and not an empty string/list...
+                if ip not in ips and ip != [] and ip != "":
+                    #Show the IP to the user
+                    print(ip)
+                    #Add one to the new-IP counter
+                    counter += 1
+                    #Add the IP to the list with known IP's
+                    ips.append(ip)
 
-                with open(ipfile, "w") as knownips:
-                    for ip in ips:
-                        if ip != []:
-                            knownips.write(f"{ip}\n")
+            #Write all the (now) known IP's to the file
+            with open(ipfile, "w") as knownips:
+                for ip in ips:
+                    #Otherwise there will be an empty list at top of the file
+                    if ip != []:
+                        knownips.write(f"{ip}\n")
 
+            #If no new IP's were detetected...
+            if counter == 0:
+                #Then tell the user
+                print("\nNo new IP-addresses found\n")
+
+            #If new IP's where found...
+            else:
+                #Then tell the user
+                print(f"\n{counter} new IP-address(es) found\n")
+
+            #Stop the loop
             break
 
-        #Handle error
+        #If the file cannot be opend...
         except:
-            print("Cannot acces file. ")
-            exit()
+            if fnf:
+                print("\nCannot access file. Please make sure the file location and permissions are correct and try again\n")
+            choice = input("Would you like to try again? [y/n]: ")
+
+            #Try to ask the user for another logfile location
+            try:
+                if choice[0] == "y" or choice[0] == "Y":
+                    #Ask for anoher location
+                    ipfile = input("What is the location of the logfile: ")
+
+                    #If the file cannot be found make sure to show the "file not found" message
+                    fnf = True
+
+                #If the user doesn't want to change te file...
+                elif choice[0] == "n" or choice[0] == "N":
+                    #Stop the loop
+                    break
+
+                #If the user didin't answer correctly...
+                else:
+                    #Let the except handle the rest
+                    raise Exception
+
+            # If the user didin't answer correctly...
+            except:
+                #Let them know
+                print("\nPlease give a valid answer\n")
+                #Make sure the "file not found" message is not shown again
+                fnf = False
 
 
 ##########Run at boot code##########
