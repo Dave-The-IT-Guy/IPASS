@@ -1,4 +1,6 @@
 https://martin-thoma.com/configuration-files-in-python
 https://docs.python.org/3/library/
+https://linuxhint.com/add_command_line_arguments_to_a_python_script
+https://docs.python.org/3/library/argparse.html
 
 rest staat in de code vermeld
