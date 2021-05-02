@@ -7,7 +7,8 @@ version = 0.1
 
 ##########Imports##########
 import re #For regex
-
+import os
+import json
 
 ##########Functions##########
 
@@ -339,7 +340,7 @@ def dvdl_show_all_new_ips(logfile, **kwargs):
     while True:
 
         #If the file can be opend...
-        try:
+        if os.path.exists(ipfile):
             #Keep track how many IP addresses are added
             counter = 0
 
@@ -395,16 +396,16 @@ def dvdl_show_all_new_ips(logfile, **kwargs):
             break
 
         #If the file cannot be opend...
-        except:
+        else:
             if fnf:
-                print("\nCannot access file. Please make sure the file location and permissions are correct and try again\n")
+                print("\nCannot access knownip-file. Please make sure the file location and permissions are correct and try again\n")
             choice = input("Would you like to try again? [y/n]: ")
 
             #Try to ask the user for another logfile location
             try:
                 if choice[0] == "y" or choice[0] == "Y":
                     #Ask for anoher location
-                    ipfile = input("What is the location of the logfile: ")
+                    ipfile = input("What is the location of the knownip-file: ")
 
                     #If the file cannot be found make sure to show the "file not found" message
                     fnf = True
