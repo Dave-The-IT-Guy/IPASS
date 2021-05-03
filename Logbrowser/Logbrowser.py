@@ -3,6 +3,7 @@
 #Programname: OVPNLogbrowser
 #Description: Een programma om OpenVPN logfiles uit te lezen
 from dis import code_info
+from typing import TextIO
 
 version = 0.1
 
@@ -237,6 +238,20 @@ def dvdl_menu_handler(logfile, choice):
 def dvdl_filter_logfile(file, **kwargs):
     #Check if the logfile is (still) at the right location
     file = dvdl_check_file_location(file, "OpenVPN-logfile")
+
+    while True:
+        # Check if the identifier is present
+        with open(file, "r") as file:
+            #Check if the file looks like a logfile
+            if not re.findall(f"\d{4}(:\d{2}){2}-(\d{2}:){2}\d{2} \w{1,} openvpn\[\d{1,5}]:", file.readline()):
+            
+                # If the identiefier isn't present let the user choose another file
+                print("This doesn't seem to be an OpenVPN-logfile. Please select another file")
+                file = dvdl_check_file_location("", "OpenVPN-logfile", fnf=False)
+
+            # If the identifier is present stop the loop
+            else:
+                break
     
     #Retrieve the filtertype ("or" or "and")
     type = kwargs.get("type", "or")
@@ -247,7 +262,7 @@ def dvdl_filter_logfile(file, **kwargs):
 
     #Define list to store the result(s)
     result = []
-
+    
     #Open the logfile
     with open(file, "r") as logfile:
         #If the filtertype is "or"...
@@ -437,13 +452,18 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
     #Value of the first line of the knownip file.
     identifier = "48 65 74 20 51 57 45 52 54 59 20 74 6f 65 74 73 65 6e 62 6f 72 64 20 77 61 73 20 67 65 6d 61 61 6b 74 20 6f 6d 20 74 65 20 76 6f 6f 72 6b 6f 6d 65 6e 20 64 61 74 20 6c 65 74 74 65 72 73 74 61 6e 67 65 74 6a 65 73 20 67 69 6e 67 65 6e 20 62 6f 74 73 65 6e 20 65 6e 20 6b 6c 65 6d 20 6b 77 61 6d 65 6e 20 74 65 20 7a 69 74 74 65 6e 20 28 62 72 6f 6e 3a 20 57 69 6b 69 70 65 64 69 61 29"
     
-    #Check if the identifier is present
-    with open(ipfile, "r") as file:
-        if not file.readline() == identifier:
+    while True:
+        #Check if the identifier is present
+        with open(ipfile, "r") as file:
+            if not (file.readline()).strip() == identifier:
+                
+                #If the identiefier isn't present let the user choose another file
+                print("The identifier isn't correct. Please select another file")
+                ipfile = dvdl_check_file_location("", "knownip-file", fnf=False)
             
-            #If the identiefier isn't present let the user choose another file
-            print("The identifier string is not present or correct. Please select another file")
-            ipfile = dvdl_check_file_location("", "knownip-file")
+            #If the identifier is present stop the loop
+            else:
+                break
     
     #Grab all IP's from the logfile
     iplist = dvdl_filter_logfile(logfile)
@@ -504,11 +524,16 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
         else:
             print(f"{counter} new IP-addresses found")
 
-def dvdl_check_file_location(file, filename):
+def dvdl_check_file_location(file, filename, **kwargs):
+    
+    #Determines if the "file not found message should be shown (the first time)"
+    fnf = kwargs.get("fnf", True)
+    
+    #Check of the file exists
     if os.path.exists(file):
         return file
-                                                                                            ##########COMMENTAAR PLAATSES!!!###########
-    fnf = True
+    
+    #Keep the loop until the file is found or the user want to quit
     while True:
         # This statement determines if the "file not found" message should be displayed
         if fnf:
