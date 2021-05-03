@@ -33,7 +33,7 @@ arguments = parser.parse_args()
 ##########Functions##########
 
 #This functions shows the menu
-def dvdl_show_menu():
+def dvdl_show_menu(logfile):
     print("\nHow may I assist you?\n"
     "1.  Show me the top 10 IP's with the most unsuccessful connections\n"
     "2.  Show me the top 10 IP's with most successful connections\n"
@@ -43,20 +43,21 @@ def dvdl_show_menu():
     "6.  Show me all used management commando's\n"
     "7.  I want to check an IP-adres for attempted connection's\n"
     "8.  Show me all new IP-adresses\n"
-    "9.  I want to create a new configuration file\n"
-    "10. Show me all the program parameters\n"
-    "11. Close program\n")
+    "9.  I want to create a new knownip file\n"
+    "10. I want to create a new configuration file\n"
+    "11. Show me all the program parameters\n"
+    "12. Close program\n")
     #Ask which option needs to be selected
     choice = input("Make your choice: ")
 
     #Start the function that handles the menu
-    dvdl_menu_handler(choice)
+    dvdl_menu_handler(logfile, choice)
 
     #Give the user time to check the data
     input("Press return to continue...")
 
 
-def dvdl_menu_handler(choice):
+def dvdl_menu_handler(logfile, choice):
     
     #If no choice is valid this variable wll make sure an errormessage is shown
     error = True
@@ -74,13 +75,13 @@ def dvdl_menu_handler(choice):
             with suppress(AttributeError):
                 #Check which parameter the function needs and call the function
                 if choice == "1" or choice.top10 == "failed":
-                    results = dvdl_top10_inlog(unsuccessful=True)
+                    results = dvdl_top10_inlog(logfile, unsuccessful=True)
                     # Show the title
                     print(f"Top 10 unsuccessful connections:")
 
             with suppress(AttributeError):
                 if choice == "2" or choice.top10 == "successful":
-                    results = dvdl_top10_inlog(unsuccessful=False)
+                    results = dvdl_top10_inlog(logfile, unsuccessful=False)
                     # Show the title
                     print(f"Top 10 successful connections:")
     
@@ -119,7 +120,7 @@ def dvdl_menu_handler(choice):
             print("\nGenerating...\n")
     
             #Call the right function...
-            result = dvdl_non_ovpn_prot_counter()
+            result = dvdl_non_ovpn_prot_counter(logfile)
     
             #And show the result
             print(f"{result} connection(s) weren't made with the OpenVPN protocol")
@@ -133,7 +134,7 @@ def dvdl_menu_handler(choice):
             print("\nGenerating...\n")
             
             #Gat all used management commands
-            results = dvdl_used_management_commands()
+            results = dvdl_used_management_commands(logfile)
     
             # A counter to show the positions
             position = 0
@@ -165,7 +166,7 @@ def dvdl_menu_handler(choice):
                 #Ask which IP needs to be checked
                 ip = input("Type an IP-address to check it: ")
                 #Call the function
-                results = dvdl_check_ip(ip)
+                results = dvdl_check_ip(logfile, ip)
                 #If the IP is valid than show the results
                 if results != None:
                     #Show the result to the user
@@ -176,7 +177,7 @@ def dvdl_menu_handler(choice):
                 #Loop trough all given IP's
                 for ip in choice.checkip:
                     # Call the function
-                    results = dvdl_check_ip(ip)
+                    results = dvdl_check_ip(logfile, ip)
                     # If the IP is valid than show the results
                     if results != None:
                         # Show the result to the user
@@ -191,17 +192,19 @@ def dvdl_menu_handler(choice):
             print("\nGenerating...\n")
             
             #Call the right function
-            dvdl_show_all_new_ips()
-
+            dvdl_show_all_new_ips(logfile)
+    
     with suppress(AttributeError):
         if choice == "9":
-            #Since a valid option was chosen the errormessage doesn't need to be displayed
+            # Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
-            
+    
             # Let the user know the program is generating the requested info
-            print("\nGenerating...\n")
-            pass
-
+            print("\nCreating...\n")
+            
+            with open("knownip.txt", "w") as file:
+                file.write("48 65 74 20 51 57 45 52 54 59 20 74 6f 65 74 73 65 6e 62 6f 72 64 20 77 61 73 20 67 65 6d 61 61 6b 74 20 6f 6d 20 74 65 20 76 6f 6f 72 6b 6f 6d 65 6e 20 64 61 74 20 6c 65 74 74 65 72 73 74 61 6e 67 65 74 6a 65 73 20 67 69 6e 67 65 6e 20 62 6f 74 73 65 6e 20 65 6e 20 6b 6c 65 6d 20 6b 77 61 6d 65 6e 20 74 65 20 7a 69 74 74 65 6e 20 28 62 72 6f 6e 3a 20 57 69 6b 69 70 65 64 69 61 29")
+    
     with suppress(AttributeError):
         if choice == "10":
             #Since a valid option was chosen the errormessage doesn't need to be displayed
@@ -211,10 +214,19 @@ def dvdl_menu_handler(choice):
             print("\nGenerating...\n")
             pass
 
+    with suppress(AttributeError):
         if choice == "11":
             #Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
             
+            # Let the user know the program is generating the requested info
+            print("\nGenerating...\n")
+            pass
+
+        if choice == "12":
+            #Since a valid option was chosen the errormessage doesn't need to be displayed
+            error = False
+            #Stop the program
             exit()
     
         if error:
@@ -222,7 +234,7 @@ def dvdl_menu_handler(choice):
 
 
 #Retrieve all data from the logfile and filter it
-def dvdl_filter_logfile(file=arguments.logfile, **kwargs):
+def dvdl_filter_logfile(file, **kwargs):
     #Check if the logfile is (still) at the right location
     file = dvdl_check_file_location(file, "OpenVPN-logfile")
     
@@ -264,16 +276,16 @@ def dvdl_filter_logfile(file=arguments.logfile, **kwargs):
 
 
 #This function makes a top 10 of the most (un)successful login attempts
-def dvdl_top10_inlog(unsuccessful):
+def dvdl_top10_inlog(logfile, unsuccessful):
     #If it needs to be an top 10 of unsuccessful attempts than...
     if unsuccessful:
         #Make a list of all unsuccessful attempts
-        filtered = dvdl_filter_logfile(filter1="AUTH_FAILED")
+        filtered = dvdl_filter_logfile(logfile, filter1="AUTH_FAILED")
 
     #If it needs to be an top 10 of successful attempts than...
     else:
         # Make a list of all successful attempts
-        filtered = dvdl_filter_logfile(filter1="TLS: Initial packet")
+        filtered = dvdl_filter_logfile(logfile, filter1="TLS: Initial packet")
 
     #Make an empty dictionairy to count the IP-addresses
     counter = {}
@@ -322,18 +334,18 @@ def dvdl_top10_inlog(unsuccessful):
 
 
 #A function that determines how many connections weren't made with the OVPN protocol
-def dvdl_non_ovpn_prot_counter():
+def dvdl_non_ovpn_prot_counter(logfile):
     #Filter the logfile
-    connections = dvdl_filter_logfile(filter1="Non-OpenVPN client protocol detected")
+    connections = dvdl_filter_logfile(logfile, filter1="Non-OpenVPN client protocol detected")
 
     #Since one entry is one hit, take the lenght of the list and return it (number)
     return len(connections)
 
 
 #Collect all used management commands
-def dvdl_used_management_commands():
+def dvdl_used_management_commands(logfile):
     # Filter the logfile
-    logdata = dvdl_filter_logfile(filter1="MANAGEMENT: CMD")
+    logdata = dvdl_filter_logfile(logfile, filter1="MANAGEMENT: CMD")
 
     # Make an empty dictionairy to count the management commands
     counter = {}
@@ -384,7 +396,7 @@ def dvdl_used_management_commands():
 
 
 #Check an IP-address for attempted connections
-def dvdl_check_ip(ip):
+def dvdl_check_ip(logfile, ip):
     #If a star was given as IP than make it an empty string to filter succesfully
     if ip == "*":
         ip = ""
@@ -404,9 +416,9 @@ def dvdl_check_ip(ip):
         ip = ip[0]
 
     # Get all successful attempts form the logfile
-    successful_attempts = len(dvdl_filter_logfile(type="and", filter1=ip, filter2="TLS: Initial packet"))
+    successful_attempts = len(dvdl_filter_logfile(logfile, type="and", filter1=ip, filter2="TLS: Initial packet"))
     # Get all unsuccessful attempts form the logfile
-    unsuccessful_attempts = len(dvdl_filter_logfile(type="and", filter1=ip, filter2="AUTH_FAILED"))
+    unsuccessful_attempts = len(dvdl_filter_logfile(logfile, type="and", filter1=ip, filter2="AUTH_FAILED"))
 
     #If no IP was given then let the user know there was no filter applied
     if ip == "":
@@ -417,12 +429,24 @@ def dvdl_check_ip(ip):
 
 
 #Show all the new IP addresses
-def dvdl_show_all_new_ips(ipfile=arguments.knownip):
+def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
     
+    #Check if the file is (still) at the right location
     ipfile = dvdl_check_file_location(ipfile, "knownip-file")
     
+    #Value of the first line of the knownip file.
+    identifier = "48 65 74 20 51 57 45 52 54 59 20 74 6f 65 74 73 65 6e 62 6f 72 64 20 77 61 73 20 67 65 6d 61 61 6b 74 20 6f 6d 20 74 65 20 76 6f 6f 72 6b 6f 6d 65 6e 20 64 61 74 20 6c 65 74 74 65 72 73 74 61 6e 67 65 74 6a 65 73 20 67 69 6e 67 65 6e 20 62 6f 74 73 65 6e 20 65 6e 20 6b 6c 65 6d 20 6b 77 61 6d 65 6e 20 74 65 20 7a 69 74 74 65 6e 20 28 62 72 6f 6e 3a 20 57 69 6b 69 70 65 64 69 61 29"
+    
+    #Check if the identifier is present
+    with open(ipfile, "r") as file:
+        if not file.readline() == identifier:
+            
+            #If the identiefier isn't present let the user choose another file
+            print("The identifier string is not present or correct. Please select another file")
+            ipfile = dvdl_check_file_location("", "knownip-file")
+    
     #Grab all IP's from the logfile
-    iplist = dvdl_filter_logfile()
+    iplist = dvdl_filter_logfile(logfile)
 
     #Keep track how many IP addresses are added
     counter = 0
@@ -432,7 +456,7 @@ def dvdl_show_all_new_ips(ipfile=arguments.knownip):
 
     #Open the file with known IP's...
     with open(ipfile, "r") as knownips:
-
+        
         #And add it to the list with the other IP's
         for ip in knownips:
             ips.append(ip.strip())
@@ -457,13 +481,15 @@ def dvdl_show_all_new_ips(ipfile=arguments.knownip):
             counter += 1
             #Add the IP to the list with known IP's
             ips.append(ip)
+    
 
     #Write all the (now) known IP's to the file
     with open(ipfile, "w") as knownips:
+        knownips.write(identifier)
         for ip in ips:
             #Otherwise there will be an empty list at top of the file
             if ip != []:
-                knownips.write(f"{ip}\n")
+                knownips.write(f"\n{ip}")
 
     #If no new IP's were detetected...
     if counter == 0:
@@ -530,11 +556,14 @@ def dvdl_check_file_location(file, filename):
 
 ##########Run at boot code##########
 
+#Check if the logfile location is correct
+logfile = dvdl_check_file_location(arguments.logfile, "OpenVPN-logfile")
+
 if arguments.gui:
     while True:
-        dvdl_show_menu()
+        dvdl_show_menu(logfile)
 else:
-    dvdl_menu_handler(arguments)
+    dvdl_menu_handler(logfile, arguments)
 
 #TODO: Finish file params
 #TODO: Show program version/information
