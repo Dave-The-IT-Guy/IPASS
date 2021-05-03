@@ -224,7 +224,7 @@ def dvdl_menu_handler(choice):
 #Retrieve all data from the logfile and filter it
 def dvdl_filter_logfile(file=arguments.logfile, **kwargs):
     #Check if the logfile is (still) at the right location
-    file = dvdl_check_file_location(file)
+    file = dvdl_check_file_location(file, "OpenVPN-logfile")
     
     #Retrieve the filtertype ("or" or "and")
     type = kwargs.get("type", "or")
@@ -419,7 +419,7 @@ def dvdl_check_ip(ip):
 #Show all the new IP addresses
 def dvdl_show_all_new_ips(ipfile=arguments.knownip):
     
-    ipfile = dvdl_check_file_location(ipfile)
+    ipfile = dvdl_check_file_location(ipfile, "knownip-file")
     
     #Grab all IP's from the logfile
     iplist = dvdl_filter_logfile()
@@ -445,7 +445,7 @@ def dvdl_show_all_new_ips(ipfile=arguments.knownip):
         if ip == []:
             pass
 
-        #Get the IP
+        #If that isn't the case then get the IP
         else:
             ip = ip[0]
 
@@ -478,7 +478,7 @@ def dvdl_show_all_new_ips(ipfile=arguments.knownip):
         else:
             print(f"{counter} new IP-addresses found")
 
-def dvdl_check_file_location(file):
+def dvdl_check_file_location(file, filename):
     if os.path.exists(file):
         return file
                                                                                             ##########COMMENTAAR PLAATSES!!!###########
@@ -486,7 +486,7 @@ def dvdl_check_file_location(file):
     while True:
         # This statement determines if the "file not found" message should be displayed
         if fnf:
-            print("\nCannot access file. Please make sure the file location and permissions are correct and try again\n")
+            print(f"\nCannot access {filename}. Please make sure the file location and permissions are correct and try again\n")
 
         # Ask the user if they would like to try again
         choice = input("Would you like to try again? [y/n]: ")
@@ -495,7 +495,7 @@ def dvdl_check_file_location(file):
         try:
             if choice[0] == "y" or choice[0] == "Y":
                 # Ask for anoher location
-                file = input("What is the location of the file: ")
+                file = input(f"What is the location of the {filename}: ")
 
                 # Try the path
                 if os.path.exists(file):
@@ -509,16 +509,17 @@ def dvdl_check_file_location(file):
 
             # If the user doesn't want to change te file...
             elif choice[0] == "n" or choice[0] == "N":
-                # Stop the loop
-                return ""
+                # Stop the program
+                print("\nOperatation canceled by user")
+                exit()
 
             # If the user didin't answer correctly...
             else:
                 # Let the except handle the rest
-                raise Exception
+                raise IndexError
 
         # If the user didin't answer correctly...
-        except:
+        except IndexError:
             # Let them know
             print("\nPlease give a valid answer\n")
             # Make sure the "file not found" message is not shown again
