@@ -241,9 +241,10 @@ def dvdl_filter_logfile(file, **kwargs):
 
     while True:
         # Check if the identifier is present
+        
         with open(file, "r") as file:
             #Check if the file looks like a logfile
-            if not re.findall(f"\d{4}(:\d{2}){2}-(\d{2}:){2}\d{2} \w{1,} openvpn\[\d{1,5}]:", file.readline()):
+            if not re.findall(r"\d{4}(:\d{2}){2}-(\d{2}:){2}\d{2} \w{1,} openvpn\[\d{1,5}]:", file.readline()):
             
                 # If the identiefier isn't present let the user choose another file
                 print("This doesn't seem to be an OpenVPN-logfile. Please select another file")
