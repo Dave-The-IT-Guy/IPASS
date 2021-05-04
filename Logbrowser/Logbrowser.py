@@ -18,7 +18,7 @@ import json
 
 ##########Arguments##########
 parser = argparse.ArgumentParser(description="A program to browse and analyse OpenVPN logfiles", exit_on_error=True)
-parser.add_argument("-c", "--config-location", help="path to the configuration file", default="config.json", dest="configfile")
+parser.add_argument("-c", "--config-location", help="path to the configuration file", default="", dest="configfile")
 parser.add_argument("-d", "--top5-connection-days", help="show the top 5 of days with the most (un)successful connections", choices=["failed", "successful"], dest="top5")
 parser.add_argument("-g", "--show-menu", help="when called the menu will be showed", action="store_true", dest="gui")
 parser.add_argument("-i", "--check-ip", help="check one or more ip-addresses for attempted connection(s)", nargs="*", dest="checkip")
@@ -27,6 +27,7 @@ parser.add_argument("-l", "--logfile-location", help="path to the OpenVPN logfil
 parser.add_argument("-m", "--used-management-commands", help="show all used management commando's", action="store_true", dest="management")
 parser.add_argument("-n", "--new-ips", help="show all new IP-adresses", action="store_true", dest="shownip")
 parser.add_argument("-p", "--non-openvpn-protocol", help="show how many connections weren't made with the OpenVPN protocol", action="store_true", dest="openvpnprot")
+parser.add_argument("-s", "--save-output", help="determines if the output should be shown or written to a file", action="store_true", dest="printer")
 parser.add_argument("-t", "--top10-connection-ips", help="show the top 10 (failed) connection attempts", choices=["failed", "successful"], dest="top10")
 arguments = parser.parse_args()
 
@@ -70,21 +71,43 @@ def dvdl_menu_handler(logfile, choice):
             #Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
             
-            #Let the user know the program is generating the requested info
-            print("\nGenerating...\n")
+            #Check if the output needs to be written to a file
+            if not arguments.printer:
+                #Let the user know the program is generating the requested info
+                print("\nGenerating...\n")
             
             with suppress(AttributeError):
                 #Check which parameter the function needs and call the function
                 if choice == "1" or choice.top10 == "failed":
                     results = dvdl_top10_inlog(logfile, unsuccessful=True)
-                    # Show the title
-                    print(f"Top 10 unsuccessful connections:")
 
+                    # Check if the output needs to be written to a file
+                    if not arguments.printer:
+                        # Show the title
+                        print(f"Top 10 unsuccessful connections:")
+
+                    # If the output needs to be in the file:
+                    else:
+                        # Open the result file
+                        with open("result.txt", "a") as resultfile:
+                            # And write the, otherwise printed, statement to the file
+                            resultfile.write("\nTop 10 unsuccessful connections:")
+                            
             with suppress(AttributeError):
                 if choice == "2" or choice.top10 == "successful":
                     results = dvdl_top10_inlog(logfile, unsuccessful=False)
-                    # Show the title
-                    print(f"Top 10 successful connections:")
+                    
+                    # Check if the output needs to be written to a file
+                    if not arguments.printer:
+                        # Show the title
+                        print(f"Top 10 successful connections:")
+
+                    # If the output needs to be in the file:
+                    else:
+                        #Open the result file
+                        with open("result.txt", "a") as resultfile:
+                            #And write the, otherwise printed, statement to the file
+                            resultfile.write("\nTop 10 successful connections:")
     
             #A counter to show the positions
             position = 0
@@ -98,41 +121,70 @@ def dvdl_menu_handler(logfile, choice):
                 word = "try's"
                 if result[1] == 1:
                     word = "try"
-    
-                #And show it to the user
-                print(f"{position}: {result[0]} ({result[1]} {word})")
+                
+                #Check if the outputs needs to be printed or not
+                if not arguments.printer:
+                    #And show it to the user
+                    print(f"{position}: {result[0]} ({result[1]} {word})")
+                    
+                else:
+                    # Open the result file
+                    with open("result.txt", "a") as resultfile:
+                        # And write the, otherwise printed, statement to the file
+                        resultfile.write(f"\n{position}: {result[0]} ({result[1]} {word})")
                 
     with suppress(AttributeError):
         if choice == "3" or choice == "4" or choice.top5 == "failed" or choice.top5 == "successful":
             #Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
+
+            # Check if the output needs to be written to a file
+            if not arguments.printer:
+                # Let the user know the program is generating the requested info
+                print("\nGenerating...\n")
+                print("option 3/4")
+
+            # If the output needs to be in the file:
+            else:
+                # Open the result file
+                with open("result.txt", "a") as resultfile:
+                    # And write the, otherwise printed, statement to the file
+                    resultfile.write("\noption 3/4")
             
-            # Let the user know the program is generating the requested info
-            print("\nGenerating...\n")
-            print("option 3/4")
+            
 
     with suppress(AttributeError):
         #If the user chose option 5 than...
         if choice == "5" or choice.openvpnprot:
             #Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
-            
-            # Let the user know the program is generating the requested info
-            print("\nGenerating...\n")
+
+            # Check if the output needs to be written to a file
+            if not arguments.printer:
+                # Let the user know the program is generating the requested info
+                print("\nGenerating...\n")
     
             #Call the right function...
             result = dvdl_non_ovpn_prot_counter(logfile)
-    
-            #And show the result
-            print(f"{result} connection(s) weren't made with the OpenVPN protocol")
+            
+            # Check if the output needs to be written to a file
+            if not arguments.printer:
+                #And show the result
+                print(f"{result} connection(s) weren't made with the OpenVPN protocol")
+                
+            else:
+                with open("results.txt", "a") as resultfile:
+                    resultfile.write(f"{result} connection(s) weren't made with the OpenVPN protocol")
 
     with suppress(AttributeError):
         if choice == "6" or choice.management:
             #Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
-            
-            # Let the user know the program is generating the requested info
-            print("\nGenerating...\n")
+
+            # Check if the output needs to be written to a file
+            if not arguments.printer:
+                # Let the user know the program is generating the requested info
+                print("\nGenerating...\n")
             
             #Gat all used management commands
             results = dvdl_used_management_commands(logfile)
@@ -149,48 +201,53 @@ def dvdl_menu_handler(logfile, choice):
                 word = "times"
                 if result[1] == 1:
                     word = "time"
-    
-                #And show it to the user
-                print(f"{position}: {result[0]} (used {result[1]} {word})")
+                
+                if not arguments.printer:
+                    #And show it to the user
+                    print(f"{position}: {result[0]} (used {result[1]} {word})")
+                    
+                else:
+                    with open("result.txt", "a") as resultfile:
+                        resultfile.write(f"{position}: {result[0]} (used {result[1]} {word})")
 
     with suppress(AttributeError):
         if choice == "7" or choice.checkip:
             #Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
             
-            # Let the user know the program is generating the requested info
-            print("\nGenerating...\n")
+            #If the command is started from the cli...
+            if choice != "7":
+                # Check if the output needs to be written to a file
+                if not arguments.printer:
+                    # Let the user know the program is generating the requested info
+                    print("\nGenerating...\n")
             
             
             #If chosen by menu:
             if choice == "7":
                 #Ask which IP needs to be checked
                 ip = input("Type an IP-address to check it: ")
-                #Call the function
-                results = dvdl_check_ip(logfile, ip)
-                #If the IP is valid than show the results
-                if results != None:
-                    #Show the result to the user
-                    print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
+            
+            #Call the function
+            results = dvdl_check_ip(logfile, ip)
+            #If the IP is valid than show the results
+            if results != None and arguments.printer:
+                #Show the result to the user
+                print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
                 
-            #If chosen with parameters:
-            else:
-                #Loop trough all given IP's
-                for ip in choice.checkip:
-                    # Call the function
-                    results = dvdl_check_ip(logfile, ip)
-                    # If the IP is valid than show the results
-                    if results != None:
-                        # Show the result to the user
-                        print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
+            elif results != None:
+                with open("result.txt", "a") as resultfile:
+                    resultfile.write(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
 
     with suppress(AttributeError):
         if choice == "8" or choice.shownip:
             #Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
-            
-            # Let the user know the program is generating the requested info
-            print("\nGenerating...\n")
+
+            # Check if the output needs to be written to a file
+            if not arguments.printer:
+                # Let the user know the program is generating the requested info
+                print("\nGenerating...\n")
             
             #Call the right function
             dvdl_show_all_new_ips(logfile)
@@ -199,7 +256,7 @@ def dvdl_menu_handler(logfile, choice):
         if choice == "9":
             # Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
-    
+            
             # Let the user know the program is generating the requested info
             print("\nCreating...\n")
             
@@ -227,6 +284,7 @@ def dvdl_menu_handler(logfile, choice):
         if choice == "12":
             #Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
+            
             #Stop the program
             exit()
     
@@ -241,15 +299,23 @@ def dvdl_filter_logfile(file, **kwargs):
 
     while True:
         # Check if the identifier is present
-        
-        with open(file, "r") as file:
-            #Check if the file looks like a logfile
-            if not re.findall(r"\d{4}(:\d{2}){2}-(\d{2}:){2}\d{2} \w{1,} openvpn\[\d{1,5}]:", file.readline()):
+        with open(file, "r") as logfile:
             
-                # If the identiefier isn't present let the user choose another file
-                print("This doesn't seem to be an OpenVPN-logfile. Please select another file")
-                file = dvdl_check_file_location("", "OpenVPN-logfile", fnf=False)
-
+            #Check if the file looks like a logfile
+            if not re.findall(r"\d{4}(:\d{2}){2}-(\d{2}:){2}\d{2} \w{1,} openvpn\[\d{1,5}]:", logfile.readline()):
+                
+                #Comment here
+                if not arguments.printer:
+                    # If the identiefier isn't present let the user choose another file
+                    print("This doesn't seem to be an OpenVPN-logfile. Please select another file")
+                    file = dvdl_check_file_location("", "OpenVPN-logfile", fnf=False)
+                    
+                else:
+                    print("The submitted file doesn't seem to be an OpenVPN-logfile.")
+                    with open("result.txt", "a") as resultfile:
+                        resultfile.write("\n\nThe submitted file doesn't seem to be an OpenVPN-logfile.\n\n")
+                    exit()
+                
             # If the identifier is present stop the loop
             else:
                 break
@@ -422,12 +488,17 @@ def dvdl_check_ip(logfile, ip):
         ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}[\.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}\b", ip) # To test: https://regex101.com/
 
         #If the IP is not valid...
-        if ip == []:
+        if ip == [] and not arguments.printer:
             #Let the user know the IP was incorrect
             print("Please provide a valid IP")
             #Since the IP was incorrect there's nothing to return
             return None
-
+        
+        elif ip == []:
+            print("No valid IP provided")
+            with open("result.txt", "a") as resultfile:
+                resultfile.write("No valid IP provided")
+                
         #Revert the list to a single IP
         ip = ip[0]
 
@@ -458,9 +529,15 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
         with open(ipfile, "r") as file:
             if not (file.readline()).strip() == identifier:
                 
-                #If the identiefier isn't present let the user choose another file
-                print("The identifier isn't correct. Please select another file")
-                ipfile = dvdl_check_file_location("", "knownip-file", fnf=False)
+                if not arguments.printer:
+                    #If the identiefier isn't present let the user choose another file
+                    print("The identifier isn't correct. Please select another file")
+                    ipfile = dvdl_check_file_location("", "knownip-file", fnf=False)
+                
+                else:
+                    print("The identiefier of the knownipfile isn't correct")
+                    with open("result.txt", "a") as resultfile:
+                        resultfile.write("\n\nThe identiefier of the knownipfile isn't correct\n\n")
             
             #If the identifier is present stop the loop
             else:
@@ -481,6 +558,10 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
         #And add it to the list with the other IP's
         for ip in knownips:
             ips.append(ip.strip())
+            
+    if arguments.printer:
+        with open("result.txt", "a") as resultfile:
+            resultfile.write("New IP-addresses:\n")
 
     #Find all the IP's in the logfile
     for string in iplist:
@@ -496,8 +577,15 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
 
         #If the IP is not in the list with known IP's and not an empty string/list...
         if ip not in ips and ip != [] and ip != "":
-            #Show the IP to the user
-            print(ip)
+            
+            if not arguments.printer:
+                #Show the IP to the user
+                print(ip)
+                
+            else:
+                with open("result.txt", "a") as resultfile:
+                    resultfile.write(ip)
+                
             #Add one to the new-IP counter
             counter += 1
             #Add the IP to the list with known IP's
@@ -512,18 +600,33 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
             if ip != []:
                 knownips.write(f"\n{ip}")
 
-    #If no new IP's were detetected...
-    if counter == 0:
-        #Then tell the user
+    # If no new IP's were detetected and the output needs to be printed...
+    if counter == 0 and not arguments.printer:
         print("No new IP-addresses found")
+    
+    # If one new IP was found and the output needs to be printed...
+    elif counter == 1 and not arguments.printer:
+        print(f"{counter} new IP-address found")
+    
+    # If more then one IP was found and the output needs to be printed...
+    elif counter >= 2 and not arguments.printer:
+        print(f"{counter} new IP-addresses found")
 
-    #If new IP's where found...
-    else:
-        #Then tell the user
-        if counter == 1:
-            print(f"{counter} new IP-address found")
-        else:
-            print(f"{counter} new IP-addresses found")
+    # If no new IP's were detetected...
+    elif counter == 0:
+        with open("result.txt", "a") as resultfile:
+            resultfile.write("No new IP-addresses found")
+
+    # If one new IP was found...
+    elif counter == 1:
+        with open("result.txt", "a") as resultfile:
+            resultfile.write(f"{counter} new IP-address found")
+
+    # If more then one IP was found...
+    elif counter >= 2:
+        with open("result.txt", "a") as resultfile:
+            resultfile.write(f"{counter} new IP-addresses found")
+
 
 def dvdl_check_file_location(file, filename, **kwargs):
     
@@ -580,16 +683,52 @@ def dvdl_check_file_location(file, filename, **kwargs):
     return file
 
 
+#Comments
+def dvdl_config_handler(configfile):
+    pass
+
 ##########Run at boot code##########
 
-#Check if the logfile location is correct
-logfile = dvdl_check_file_location(arguments.logfile, "OpenVPN-logfile")
-
-if arguments.gui:
+try:
+    #Check if the logfile location is correct
+    logfile = dvdl_check_file_location(arguments.logfile, "OpenVPN-logfile")
+    
+    #Check if the logfile is actually a logfile
     while True:
-        dvdl_show_menu(logfile)
-else:
-    dvdl_menu_handler(logfile, arguments)
+        # Check if the identifier is present
+        with open(logfile, "r") as file:
+            
+            # Check if the file looks like a logfile
+            if not re.findall(r"\d{4}(:\d{2}){2}-(\d{2}:){2}\d{2} \w{1,} openvpn\[\d{1,5}]:", file.readline()):
+                # If the identiefier isn't present let the user choose another file
+                print("The selected logfile doesn't seem to be an OpenVPN-logfile. Please select another file")
+                logfile = dvdl_check_file_location("", "OpenVPN-logfile", fnf=False)
+            
+            # If the identifier is present stop the loop
+            else:
+                break
+
+
+    if arguments.gui:
+        while True:
+            dvdl_show_menu(logfile)
+    else:
+        if arguments.configfile == "":
+            dvdl_menu_handler(logfile, arguments)
+        else:
+            #use params
+            dvdl_config_handler(arguments.configfile)
+        
+except KeyboardInterrupt:
+    print("\n\nOperation cancelled by user")
+    exit()
+
+except SystemExit:
+    exit()
+
+except:
+    print("\n\nSomething went wrong. Please try again later")
+    exit()
 
 #TODO: Finish file params
 #TODO: Show program version/information
