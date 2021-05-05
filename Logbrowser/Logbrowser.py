@@ -2,9 +2,6 @@
 #Class:
 #Programname: OVPNLogbrowser
 #Description: Een programma om OpenVPN logfiles uit te lezen
-from dis import code_info
-from typing import TextIO
-
 version = 0.1
 
 
@@ -214,7 +211,7 @@ def dvdl_menu_handler(logfile, choice):
                     # Open the file
                     with open("result.txt", "a") as resultfile:
                         # And write the, otherwise printed, statement to the file
-                        resultfile.write(f"{position}: {result[0]} (used {result[1]} {word})")
+                        resultfile.write(f"\n{position}: {result[0]} (used {result[1]} {word})")
 
     with suppress(AttributeError):
         if choice == "7" or choice.checkip:
@@ -236,17 +233,17 @@ def dvdl_menu_handler(logfile, choice):
             
             #Call the function
             results = dvdl_check_ip(logfile, ip)
-            #If the IP is valid than show the results
+            #If the IP is valid and the results need to be printed than show the results
             if results != None and not arguments.printer:
                 #Show the result to the user
                 print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
 
-            #If the output needs to be written to a file...
+            #If the IP is valid and output needs to be written to a file...
             elif results != None:
                 # Open the file
                 with open("result.txt", "a") as resultfile:
                     # And write the, otherwise printed, statement to the file
-                    resultfile.write(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
+                    resultfile.write(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}")
 
     with suppress(AttributeError):
         if choice == "8" or choice.shownip:
@@ -496,7 +493,7 @@ def dvdl_check_ip(logfile, ip):
     #If the wildcard was not provided check if the IP is valid
     else:
         #Regex to check if the IP is valid
-        ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}[\.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}\b", ip) # To test: https://regex101.com/
+        ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}\b", ip) # To test: https://regex101.com/
 
         #If the IP is not valid...
         if ip == [] and not arguments.printer:
@@ -510,7 +507,7 @@ def dvdl_check_ip(logfile, ip):
             # Open the file
             with open("result.txt", "a") as resultfile:
                 # And write the, otherwise printed, statement to the file
-                resultfile.write("No valid IP provided")
+                resultfile.write("\n\nNo valid IP provided\n\n")
                 
         #Revert the list to a single IP
         ip = ip[0]
@@ -579,7 +576,7 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
         # Open the file
         with open("result.txt", "a") as resultfile:
             # And write the, otherwise printed, statement to the file
-            resultfile.write("New IP-addresses:\n")
+            resultfile.write("\nNew IP-addresses:")
 
     #Find all the IP's in the logfile
     for string in iplist:
@@ -605,7 +602,7 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
                 # Open the file
                 with open("result.txt", "a") as resultfile:
                     # And write the, otherwise printed, statement to the file
-                    resultfile.write(ip)
+                    resultfile.write(f"\n{ip}")
                 
             #Add one to the new-IP counter
             counter += 1
@@ -638,21 +635,21 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
         # Open the file
         with open("result.txt", "a") as resultfile:
             # And write the, otherwise printed, statement to the file
-            resultfile.write("No new IP-addresses found")
+            resultfile.write("\nNo new IP-addresses found")
 
     # If one new IP was found and the output needs to be written to a file...
     elif counter == 1:
         # Open the file
         with open("result.txt", "a") as resultfile:
             # And write the, otherwise printed, statement to the file
-            resultfile.write(f"{counter} new IP-address found")
+            resultfile.write(f"\n{counter} new IP-address found")
 
     # If more then one IP was found and the output needs to be written to a file...
     elif counter >= 2:
         # Open the file
         with open("result.txt", "a") as resultfile:
             # And write the, otherwise printed, statement to the file
-            resultfile.write(f"{counter} new IP-addresses found")
+            resultfile.write(f"\n{counter} new IP-addresses found")
 
 
 def dvdl_check_file_location(file, filename, **kwargs):
@@ -753,17 +750,26 @@ try:
             else:
                 break
 
-
+    #If the GUI needs to be showed
     if arguments.gui:
+        #Show the file version
+        print(f"Program version: {version}")
+
+        #Start the menu loop
         while True:
+            #Call the show menu function
             dvdl_show_menu(logfile)
+
+    #If the GUI doesn't need to be showed and no configfile path was given
+    elif arguments.configfile == "":
+        dvdl_menu_handler(logfile, arguments)
+
+    # If the program is started with the configfile
     else:
-        if arguments.configfile == "":
-            dvdl_menu_handler(logfile, arguments)
-        else:
-            #use params
-            dvdl_config_handler(arguments.configfile)
-        
+        #Call the function that handles the configfile
+        dvdl_config_handler(arguments.configfile)
+
+#If the program is stopped by a keyboardinterrupt (crtl+c)...
 except KeyboardInterrupt:
     # If the output needs to be printed...
     if not arguments.printer:
@@ -776,11 +782,15 @@ except KeyboardInterrupt:
         with open("result.txt", "a") as resultfile:
             # And write the, otherwise printed, statement to the file
             resultfile.write("\n\nOperation cancelled by user\n\n")
+
+    #And stop the program
     exit()
 
+#To make the exit-statements in the code work without unnecissairy messages
 except SystemExit:
     exit()
 
+#If an unknown error ocured...
 except:
     # If the output needs to be printed...
     if not arguments.printer:
@@ -795,5 +805,4 @@ except:
             resultfile.write("\n\nSomething went wrong\n\n")
     exit()
 
-#TODO: Finish file params
-#TODO: Show program version/information
+#TODO: Add configfile handler
