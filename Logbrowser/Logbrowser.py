@@ -56,8 +56,10 @@ def dvdl_show_menu(logfile):
     input("Press return to continue...")
 
 
-def dvdl_menu_handler(logfile, choice):
-    
+def dvdl_menu_handler(logfile, choice, **kwargs):
+
+    ipfile = kwargs.get("ipfile", arguments.knownip)
+
     #If no choice is valid this variable wll make sure an errormessage is shown
     error = True
     
@@ -256,7 +258,7 @@ def dvdl_menu_handler(logfile, choice):
                 print("\nGenerating...\n")
             
             #Call the right function
-            dvdl_show_all_new_ips(logfile)
+            dvdl_show_all_new_ips(logfile, ipfile)
     
     with suppress(AttributeError):
         if choice == "9":
@@ -333,7 +335,7 @@ def dvdl_filter_logfile(file, **kwargs):
     #Retrieve the first filter. If no filter was given then return all data
     filter1 = kwargs.get("filter1", "")
     #Retrieve the second filter. If no value has been assigned use this random string to prevent false-positives
-    filter2 = kwargs.get("filter2", "jdehfbwjedshfbsdjhbfsjdbdfjseadbfjshbvfuerbvf!!!#$!#$#!$%^@54546546546532654dzfjdsbjhbfshjab")
+    filter2 = kwargs.get("filter2", "jdehfbwjedshfbsdjhbfsjdSDJVBSDVJBSVJHBDMANSJDBHVJASBHVbdfjseadbfjshbvfuerbvf!!!#$!#$#!$%^@54546546546532654dzfjdsbjhbfshjab")
 
     #Define list to store the result(s)
     result = []
@@ -526,8 +528,8 @@ def dvdl_check_ip(logfile, ip):
 
 
 #Show all the new IP addresses
-def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
-    
+def dvdl_show_all_new_ips(logfile, ipfile):
+
     #Check if the file is (still) at the right location
     ipfile = dvdl_check_file_location(ipfile, "knownip-file")
     
@@ -667,6 +669,9 @@ def dvdl_check_file_location(file, filename, **kwargs):
         with open("result.txt", "a") as resultfile:
             # And write the, otherwise printed, statement to the file
             resultfile.write(f"\n\nCannot access {filename}\n\n")
+
+        #Exit the program
+        exit()
     
     #Keep the loop until the file is found or the user want to quit
     while True:
@@ -714,10 +719,40 @@ def dvdl_check_file_location(file, filename, **kwargs):
     return file
 
 
-#Comments
+#Handles the configuration file
 def dvdl_config_handler(configfile):
+
+    #Open the configfile and convert it to an dictionairy
     with open(configfile, "r") as json_file:
         configdata = json.load(json_file)
+
+    logfile = dvdl_check_file_location(configdata["logfile"], "OpenVPN-logfile")
+
+    if configdata["top10"].lower() == "unsuccessful":
+        dvdl_menu_handler(logfile, "1")
+
+    elif configdata["top10"].lower() == "successful":
+        dvdl_menu_handler(logfile, "2")
+
+    if configdata["top5"].lower() == "unsuccessful":
+        dvdl_menu_handler(logfile, "3")
+
+    elif configdata["top5"].lower() == "successful":
+        dvdl_menu_handler(logfile, "4")
+
+    if configdata["non-ovpn-prot"].lower() == "true":
+        dvdl_menu_handler(logfile, "5")
+
+    if configdata["man-coms"].lower() == "true":
+        dvdl_menu_handler(logfile, "6")
+
+    if configdata["check-ip"].lower() == "true":
+        dvdl_menu_handler(logfile, "7")
+
+    if configdata["knownip-file"].lower() != "false" and configdata["new-ips"].lower() != "false":
+        knownip = dvdl_check_file_location(configdata["knownip-file"], "knownip-file")
+        dvdl_menu_handler(logfile, "8", ipfile=knownip)
+
 
 ##########Run at boot code##########
 
@@ -731,7 +766,7 @@ try:
         with open(logfile, "r") as file:
 
             # Check if the file looks like a logfile
-            if not re.findall(r"\d{4}(:\d{2}){2}-(\d{2}:){2}\d{2} \w{1,} openvpn\[\d{1,5}]:", file.readline()):
+            if not re.findall(r"\d{4}(:\d{2}){2}-(\d{2}:){2}\d{2} \w+ openvpn\[\d{1,5}]:", file.readline()):
 
                 # If the output needs to be printed...
                 if not arguments.printer:
@@ -767,6 +802,9 @@ try:
 
     # If the program is started with the configfile
     else:
+        #Make sure all output gets redirected to a file
+        arguments.printer = True
+
         #Call the function that handles the configfile
         dvdl_config_handler(arguments.configfile)
 
@@ -805,5 +843,3 @@ except:
             # And write the, otherwise printed, statement to the file
             resultfile.write("\n\nSomething went wrong\n\n")
     exit()
-
-#TODO: Add configfile handler

@@ -1,11 +1,10 @@
 {
-  "options": {
-    "top10": "False",
+    "logfile": "openvpn.log",
+    "top10": "Unsuccessful",
     "top5": "False",
     "non-ovpn-prot": "False",
+    "man-coms": "False",
     "check-ip": "False",
     "new-ips": "False",
-    "logfile": "logfile-location",
     "knownip-file": "knownip-location"
-  }
 }
