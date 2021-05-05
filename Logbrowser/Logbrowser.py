@@ -171,10 +171,13 @@ def dvdl_menu_handler(logfile, choice):
             if not arguments.printer:
                 #And show the result
                 print(f"{result} connection(s) weren't made with the OpenVPN protocol")
-                
+
+            #If the result needs to be in the file...
             else:
-                with open("results.txt", "a") as resultfile:
-                    resultfile.write(f"{result} connection(s) weren't made with the OpenVPN protocol")
+                # Open the file
+                with open("result.txt", "a") as resultfile:
+                    # And write the, otherwise printed, statement to the file
+                    resultfile.write(f"\n{result} connection(s) weren't made with the OpenVPN protocol")
 
     with suppress(AttributeError):
         if choice == "6" or choice.management:
@@ -205,9 +208,12 @@ def dvdl_menu_handler(logfile, choice):
                 if not arguments.printer:
                     #And show it to the user
                     print(f"{position}: {result[0]} (used {result[1]} {word})")
-                    
+
+                #If the output needs to be written to a file
                 else:
+                    # Open the file
                     with open("result.txt", "a") as resultfile:
+                        # And write the, otherwise printed, statement to the file
                         resultfile.write(f"{position}: {result[0]} (used {result[1]} {word})")
 
     with suppress(AttributeError):
@@ -231,12 +237,15 @@ def dvdl_menu_handler(logfile, choice):
             #Call the function
             results = dvdl_check_ip(logfile, ip)
             #If the IP is valid than show the results
-            if results != None and arguments.printer:
+            if results != None and not arguments.printer:
                 #Show the result to the user
                 print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
-                
+
+            #If the output needs to be written to a file...
             elif results != None:
+                # Open the file
                 with open("result.txt", "a") as resultfile:
+                    # And write the, otherwise printed, statement to the file
                     resultfile.write(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
 
     with suppress(AttributeError):
@@ -309,10 +318,12 @@ def dvdl_filter_logfile(file, **kwargs):
                     # If the identiefier isn't present let the user choose another file
                     print("This doesn't seem to be an OpenVPN-logfile. Please select another file")
                     file = dvdl_check_file_location("", "OpenVPN-logfile", fnf=False)
-                    
+
+                # If the output needs to be written to the file...
                 else:
-                    print("The submitted file doesn't seem to be an OpenVPN-logfile.")
+                    # Open the file...
                     with open("result.txt", "a") as resultfile:
+                        # And write the, otherwise printed, statement to the file
                         resultfile.write("\n\nThe submitted file doesn't seem to be an OpenVPN-logfile.\n\n")
                     exit()
                 
@@ -493,10 +504,12 @@ def dvdl_check_ip(logfile, ip):
             print("Please provide a valid IP")
             #Since the IP was incorrect there's nothing to return
             return None
-        
+
+        # If the output needst to be written to the file
         elif ip == []:
-            print("No valid IP provided")
+            # Open the file
             with open("result.txt", "a") as resultfile:
+                # And write the, otherwise printed, statement to the file
                 resultfile.write("No valid IP provided")
                 
         #Revert the list to a single IP
@@ -533,10 +546,12 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
                     #If the identiefier isn't present let the user choose another file
                     print("The identifier isn't correct. Please select another file")
                     ipfile = dvdl_check_file_location("", "knownip-file", fnf=False)
-                
+
+                # If teh output needs to be written to a file
                 else:
-                    print("The identiefier of the knownipfile isn't correct")
+                    # Open the file
                     with open("result.txt", "a") as resultfile:
+                        # And write the, otherwise printed, statement to the file
                         resultfile.write("\n\nThe identiefier of the knownipfile isn't correct\n\n")
             
             #If the identifier is present stop the loop
@@ -558,9 +573,12 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
         #And add it to the list with the other IP's
         for ip in knownips:
             ips.append(ip.strip())
-            
+
+    # If the output needs to be written to a file...
     if arguments.printer:
+        # Open the file
         with open("result.txt", "a") as resultfile:
+            # And write the, otherwise printed, statement to the file
             resultfile.write("New IP-addresses:\n")
 
     #Find all the IP's in the logfile
@@ -581,9 +599,12 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
             if not arguments.printer:
                 #Show the IP to the user
                 print(ip)
-                
+
+            # If the output needs to be written to a file...
             else:
+                # Open the file
                 with open("result.txt", "a") as resultfile:
+                    # And write the, otherwise printed, statement to the file
                     resultfile.write(ip)
                 
             #Add one to the new-IP counter
@@ -612,19 +633,25 @@ def dvdl_show_all_new_ips(logfile, ipfile=arguments.knownip):
     elif counter >= 2 and not arguments.printer:
         print(f"{counter} new IP-addresses found")
 
-    # If no new IP's were detetected...
+    # If no new IP's were detetected and the output needs to be written to a file...
     elif counter == 0:
+        # Open the file
         with open("result.txt", "a") as resultfile:
+            # And write the, otherwise printed, statement to the file
             resultfile.write("No new IP-addresses found")
 
-    # If one new IP was found...
+    # If one new IP was found and the output needs to be written to a file...
     elif counter == 1:
+        # Open the file
         with open("result.txt", "a") as resultfile:
+            # And write the, otherwise printed, statement to the file
             resultfile.write(f"{counter} new IP-address found")
 
-    # If more then one IP was found...
+    # If more then one IP was found and the output needs to be written to a file...
     elif counter >= 2:
+        # Open the file
         with open("result.txt", "a") as resultfile:
+            # And write the, otherwise printed, statement to the file
             resultfile.write(f"{counter} new IP-addresses found")
 
 
@@ -636,6 +663,13 @@ def dvdl_check_file_location(file, filename, **kwargs):
     #Check of the file exists
     if os.path.exists(file):
         return file
+
+    # If the file can't be found and the output needs to be written to a file...
+    if not os.path.exists(file) and arguments.printer:
+        # Open the file
+        with open("result.txt", "a") as resultfile:
+            # And write the, otherwise printed, statement to the file
+            resultfile.write(f"\n\nCannot access {filename}\n\n")
     
     #Keep the loop until the file is found or the user want to quit
     while True:
@@ -697,13 +731,24 @@ try:
     while True:
         # Check if the identifier is present
         with open(logfile, "r") as file:
-            
+
             # Check if the file looks like a logfile
             if not re.findall(r"\d{4}(:\d{2}){2}-(\d{2}:){2}\d{2} \w{1,} openvpn\[\d{1,5}]:", file.readline()):
-                # If the identiefier isn't present let the user choose another file
-                print("The selected logfile doesn't seem to be an OpenVPN-logfile. Please select another file")
-                logfile = dvdl_check_file_location("", "OpenVPN-logfile", fnf=False)
-            
+
+                # If the output needs to be printed...
+                if not arguments.printer:
+                    # If the identiefier isn't present let the user choose another file
+                    print("This doesn't seem to be an OpenVPN-logfile. Please select another file")
+                    file = dvdl_check_file_location("", "OpenVPN-logfile", fnf=False)
+
+                # If the output needs to be written to a file...
+                else:
+                    # Open the file
+                    with open("result.txt", "a") as resultfile:
+                        # And write the, otherwise printed, statement to the file
+                        resultfile.write("\n\nThe submitted file doesn't seem to be an OpenVPN-logfile.\n\n")
+                    exit()
+
             # If the identifier is present stop the loop
             else:
                 break
@@ -720,14 +765,34 @@ try:
             dvdl_config_handler(arguments.configfile)
         
 except KeyboardInterrupt:
-    print("\n\nOperation cancelled by user")
+    # If the output needs to be printed...
+    if not arguments.printer:
+        # Print the message
+        print("\n\nOperation cancelled by user")
+
+    # If the output needs to be written to a file...
+    else:
+        # Open the file
+        with open("result.txt", "a") as resultfile:
+            # And write the, otherwise printed, statement to the file
+            resultfile.write("\n\nOperation cancelled by user\n\n")
     exit()
 
 except SystemExit:
     exit()
 
 except:
-    print("\n\nSomething went wrong. Please try again later")
+    # If the output needs to be printed...
+    if not arguments.printer:
+        # Print the message
+        print("\n\nSomething went wrong. Please try again later")
+
+    # If the output needs to be written to a file...
+    else:
+        # Open the file
+        with open("result.txt", "a") as resultfile:
+            # And write the, otherwise printed, statement to the file
+            resultfile.write("\n\nSomething went wrong\n\n")
     exit()
 
 #TODO: Finish file params
