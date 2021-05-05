@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../HUProjectB/.idea/HUProjectB.iml" filepath="$PROJECT_DIR$/../HUProjectB/.idea/HUProjectB.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/IPASS.iml" filepath="$PROJECT_DIR$/.idea/IPASS.iml" />
     </modules>
   </component>

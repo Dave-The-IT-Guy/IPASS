@@ -1,0 +1,11 @@
+{
+  "options": {
+    "top10": "False",
+    "top5": "False",
+    "non-ovpn-prot": "False",
+    "check-ip": "False",
+    "new-ips": "False",
+    "logfile": "logfile-location",
+    "knownip-file": "knownip-location"
+  }
+}

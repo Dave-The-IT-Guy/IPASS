@@ -716,7 +716,8 @@ def dvdl_check_file_location(file, filename, **kwargs):
 
 #Comments
 def dvdl_config_handler(configfile):
-    pass
+    with open(configfile, "r") as json_file:
+        configdata = json.load(json_file)
 
 ##########Run at boot code##########
 
