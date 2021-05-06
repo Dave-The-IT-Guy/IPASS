@@ -509,7 +509,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                     knowip = input("What is the location of the knownip-file: ")
 
                     # Then add the answer to the dictionairy
-                    answers.update({"knowip-file": knowip})
+                    answers.update({"knownip-file": knowip})
 
                     # And stop the loop
                     break
@@ -1002,7 +1002,7 @@ def dvdl_config_handler(configfile):
         if configdata["man-coms"].lower() == "true":
             dvdl_menu_handler(logfile, "6")
 
-    with suppress(SystemExit):
+    with suppress(KeyError):
         if type(configdata["check-ip"]) == list:
             dvdl_menu_handler(logfile, "7", checkip=configdata["check-ip"])
 

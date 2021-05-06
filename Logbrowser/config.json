@@ -6,5 +6,5 @@
     "man-coms": "False",
     "check-ip": "False",
     "new-ips": "True",
-    "knowip-file": "knownip.txt"
+    "knownip-file": "knownip.txt"
 }
