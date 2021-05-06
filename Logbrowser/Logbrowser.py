@@ -59,6 +59,7 @@ def dvdl_show_menu(logfile):
 def dvdl_menu_handler(logfile, choice, **kwargs):
 
     ipfile = kwargs.get("ipfile", arguments.knownip)
+    checkip = kwargs.get("checkip", arguments.checkip)
 
     #If no choice is valid this variable wll make sure an errormessage is shown
     error = True
@@ -226,22 +227,25 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
         if choice == "7" or choice.checkip:
             #Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
-            
-            #If the command is started from the cli...
-            if choice != "7":
-                # Check if the output needs to be written to a file
-                if not arguments.printer:
-                    # Let the user know the program is generating the requested info
-                    print("\nGenerating...\n")
-            
-            
-            #If chosen by menu:
-            if choice == "7":
-                #Ask which IP needs to be checked
-                ip = input("Type an IP-address to check it: ")
-            
+
+        # Check if the output needs to be written to a file
+        if not arguments.printer:
+            # Let the user know the program is generating the requested info
+            print("\nGenerating...\n")
+
+        #If chosen by menu:
+        if choice == "7" and not arguments.printer:
+            #Ask which IP's needs to be checked
+            checkip = input("Type one or more IP-address to check it (space seperated): ")
+
+            #Make a list of all the given IP's
+            checkip = checkip.split(" ")
+
+        #Loop trough the IP's and...
+        for ip in checkip:
             #Call the function
             results = dvdl_check_ip(logfile, ip)
+
             #If the IP is valid and the results need to be printed than show the results
             if results != None and not arguments.printer:
                 #Show the result to the user
@@ -285,7 +289,8 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
             
             # Let the user know the program is generating the requested info
             print("\nGenerating...\n")
-            pass
+
+            #TODO: Vragen stellen aan de user (wat moet er in de configfile) en die opslaan in een dict. Die dict daarna met de jsonmodule wegschrijven naar een bestand
 
     with suppress(AttributeError):
         if choice == "11":
@@ -764,9 +769,9 @@ def dvdl_config_handler(configfile):
         if configdata["man-coms"].lower() == "true":
             dvdl_menu_handler(logfile, "6")
 
-    with suppress(KeyError):
-        if configdata["check-ip"].lower() == "true":
-            dvdl_menu_handler(logfile, "7")
+    with suppress(SystemExit):
+        if type(configdata["check-ip"]) == list:
+            dvdl_menu_handler(logfile, "7", checkip=configdata["check-ip"])
 
     with suppress(KeyError):
         if configdata["knownip-file"].lower() != "false" and configdata["new-ips"].lower() != "false":
@@ -844,7 +849,7 @@ except KeyboardInterrupt:
             resultfile.write("\n\nOperation cancelled by user\n\n")
 
             #Write a breakline to the file to make it more organised
-            resultfile.write("====================================================================================================\n\n")
+            resultfile.write("\n====================================================================================================\n")
 
     #And stop the program
     exit()
@@ -856,7 +861,7 @@ except SystemExit:
         # Open the file
         with open("result.txt", "a") as resultfile:
             # Write a breakline to the file to make it more organised
-            resultfile.write("====================================================================================================\n\n")
+            resultfile.write("\n====================================================================================================\n")
     exit()
 
 #If an unknown error ocured...
@@ -874,7 +879,7 @@ except:
             resultfile.write("\n\nSomething went wrong\n\n")
 
             #Write a breakline to the file to make it more organised
-            resultfile.write("====================================================================================================\n\n")
+            resultfile.write("\n====================================================================================================\n")
     exit()
 
 # If the output needs to be written to a file...
@@ -882,4 +887,4 @@ if arguments.printer:
     # Open the file
     with open("result.txt", "a") as resultfile:
         # Write a breakline to the file to make it more organised
-        resultfile.write("\n\n====================================================================================================\n\n")
+        resultfile.write("\n\n\n====================================================================================================\n")
