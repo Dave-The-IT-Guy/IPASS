@@ -241,22 +241,22 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
             #Make a list of all the given IP's
             checkip = checkip.split(" ")
 
-        #Loop trough the IP's and...
-        for ip in checkip:
-            #Call the function
-            results = dvdl_check_ip(logfile, ip)
+            #Loop trough the IP's and...
+            for ip in checkip:
+                #Call the function
+                results = dvdl_check_ip(logfile, ip)
 
-            #If the IP is valid and the results need to be printed than show the results
-            if results != None and not arguments.printer:
-                #Show the result to the user
-                print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
+                #If the IP is valid and the results need to be printed than show the results
+                if results != None and not arguments.printer:
+                    #Show the result to the user
+                    print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
 
-            #If the IP is valid and output needs to be written to a file...
-            elif results != None:
-                # Open the file
-                with open("result.txt", "a") as resultfile:
-                    # And write the, otherwise printed, statement to the file
-                    resultfile.write(f"\n\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}")
+                #If the IP is valid and output needs to be written to a file...
+                elif results != None:
+                    # Open the file
+                    with open("result.txt", "a") as resultfile:
+                        # And write the, otherwise printed, statement to the file
+                        resultfile.write(f"\n\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}")
 
     with suppress(AttributeError):
         if choice == "8" or choice.shownip:
@@ -460,32 +460,32 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                     if ip != []:
                         # Add it to the list with IP's
                         ips.append(ip)
+            try:
+                # If some of the IP's are valid...
+                if skipped and len(ips) > 0:
+                    # Let the user know
+                    print("\nSome of the provided IP's were invalid. The invalid IP's were skipped")
 
-            # If some of the IP's are valid...
-            if skipped and len(ips) > 0:
-                # Let the user know
-                print("\nSome of the provided IP's were invalid. The invalid IP's were skipped")
+                    # Add the valid IP's to the dictionairy
+                    answers.update({"check-ip": ips})
 
-                # Add the valid IP's to the dictionairy
-                answers.update({"check-ip": ips})
+                # If none of the provided IP's are valid...
+                elif len(ips) == 0:
+                    # Let the user know
+                    print("\nNone of the provided IP's were valid. The question is skipped")
+
+                    # Then add the answer to the dictionairy
+                    answers.update({"check-ip": "False"})
+
+                # If all the IP's are valid
+                else:
+                    # Then add the answer to the dictionairy
+                    answers.update({"check-ip": ips})
 
             #If the question is skipped
-            elif skipped:
+            except UnboundLocalError:
                 # Then add the answer to the dictionairy
                 answers.update({"check-ip": "False"})
-
-            # If none of the provided IP's are valid...
-            elif len(ips) == 0:
-                # Let the user know
-                print("\nNone of the provided IP's were valid. The question is skipped")
-
-                # Then add the answer to the dictionairy
-                answers.update({"check-ip": "False"})
-
-            # If all the IP's are valid
-            else:
-                # Then add the answer to the dictionairy
-                answers.update({"check-ip": ips})
 
             # Check if all new IP's need to be added
             while True:
@@ -777,7 +777,7 @@ def dvdl_show_all_new_ips(logfile, ipfile):
 
     #Check if the file is (still) at the right location
     ipfile = dvdl_check_file_location(ipfile, "knownip-file")
-    
+
     #Value of the first line of the knownip file.
     identifier = "48 65 74 20 51 57 45 52 54 59 20 74 6f 65 74 73 65 6e 62 6f 72 64 20 77 61 73 20 67 65 6d 61 61 6b 74 20 6f 6d 20 74 65 20 76 6f 6f 72 6b 6f 6d 65 6e 20 64 61 74 20 6c 65 74 74 65 72 73 74 61 6e 67 65 74 6a 65 73 20 67 69 6e 67 65 6e 20 62 6f 74 73 65 6e 20 65 6e 20 6b 6c 65 6d 20 6b 77 61 6d 65 6e 20 74 65 20 7a 69 74 74 65 6e 20 28 62 72 6f 6e 3a 20 57 69 6b 69 70 65 64 69 61 29"
     
@@ -791,7 +791,7 @@ def dvdl_show_all_new_ips(logfile, ipfile):
                     print("The identifier isn't correct. Please select another file")
                     ipfile = dvdl_check_file_location("", "knownip-file", fnf=False)
 
-                # If teh output needs to be written to a file
+                # If the output needs to be written to a file
                 else:
                     # Open the file
                     with open("result.txt", "a") as resultfile:
@@ -839,7 +839,7 @@ def dvdl_show_all_new_ips(logfile, ipfile):
 
         #If the IP is not in the list with known IP's and not an empty string/list...
         if ip not in ips and ip != [] and ip != "":
-            
+
             if not arguments.printer:
                 #Show the IP to the user
                 print(ip)
@@ -862,7 +862,7 @@ def dvdl_show_all_new_ips(logfile, ipfile):
         knownips.write(identifier)
         for ip in ips:
             #Otherwise there will be an empty list at top of the file
-            if ip != []:
+            if ip != [] and ip != identifier:
                 knownips.write(f"\n{ip}")
 
     # If no new IP's were detetected and the output needs to be printed...
