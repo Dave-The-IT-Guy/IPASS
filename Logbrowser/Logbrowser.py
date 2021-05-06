@@ -90,7 +90,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                         # Open the result file
                         with open("result.txt", "a") as resultfile:
                             # And write the, otherwise printed, statement to the file
-                            resultfile.write("\nTop 10 unsuccessful connections:")
+                            resultfile.write("\n\nTop 10 unsuccessful connections:")
                             
             with suppress(AttributeError):
                 if choice == "2" or choice.top10 == "successful":
@@ -106,7 +106,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                         #Open the result file
                         with open("result.txt", "a") as resultfile:
                             #And write the, otherwise printed, statement to the file
-                            resultfile.write("\nTop 10 successful connections:")
+                            resultfile.write("\n\nTop 10 successful connections:")
     
             #A counter to show the positions
             position = 0
@@ -148,7 +148,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                 # Open the result file
                 with open("result.txt", "a") as resultfile:
                     # And write the, otherwise printed, statement to the file
-                    resultfile.write("\noption 3/4")
+                    resultfile.write("\n\noption 3/4")
             
             
 
@@ -176,7 +176,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                 # Open the file
                 with open("result.txt", "a") as resultfile:
                     # And write the, otherwise printed, statement to the file
-                    resultfile.write(f"\n{result} connection(s) weren't made with the OpenVPN protocol")
+                    resultfile.write(f"\n\n{result} connection(s) weren't made with the OpenVPN protocol")
 
     with suppress(AttributeError):
         if choice == "6" or choice.management:
@@ -187,6 +187,13 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
             if not arguments.printer:
                 # Let the user know the program is generating the requested info
                 print("\nGenerating...\n")
+
+            #If the output needs to be written to a file...
+            else:
+                #Open the file
+                with open("result.txt", "a") as resultfile:
+                    #Write a blank line to the file to make the file more readable
+                    resultfile.write("\n")
             
             #Gat all used management commands
             results = dvdl_used_management_commands(logfile)
@@ -245,7 +252,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                 # Open the file
                 with open("result.txt", "a") as resultfile:
                     # And write the, otherwise printed, statement to the file
-                    resultfile.write(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}")
+                    resultfile.write(f"\n\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}")
 
     with suppress(AttributeError):
         if choice == "8" or choice.shownip:
@@ -578,7 +585,7 @@ def dvdl_show_all_new_ips(logfile, ipfile):
         # Open the file
         with open("result.txt", "a") as resultfile:
             # And write the, otherwise printed, statement to the file
-            resultfile.write("\nNew IP-addresses:")
+            resultfile.write("\n\nNew IP-addresses:")
 
     #Find all the IP's in the logfile
     for string in iplist:
@@ -726,32 +733,46 @@ def dvdl_config_handler(configfile):
     with open(configfile, "r") as json_file:
         configdata = json.load(json_file)
 
-    logfile = dvdl_check_file_location(configdata["logfile"], "OpenVPN-logfile")
+    try:
+        #Check the path of the logfile
+        logfile = dvdl_check_file_location(configdata["logfile"], "OpenVPN-logfile")
+    except KeyError:
+        with open("result.txt", "a") as resultfile:
+            resultfile.write("\n\nThe logfile entry from the configurationfile isn't present. Aborting program\n\n")
+            exit()
 
-    if configdata["top10"].lower() == "unsuccessful":
-        dvdl_menu_handler(logfile, "1")
+    #Check which functions need to be called
+    with suppress(KeyError):
+        if configdata["top10"].lower() == "unsuccessful":
+            dvdl_menu_handler(logfile, "1")
 
-    elif configdata["top10"].lower() == "successful":
-        dvdl_menu_handler(logfile, "2")
+        elif configdata["top10"].lower() == "successful":
+            dvdl_menu_handler(logfile, "2")
 
-    if configdata["top5"].lower() == "unsuccessful":
-        dvdl_menu_handler(logfile, "3")
+    with suppress(KeyError):
+        if configdata["top5"].lower() == "unsuccessful":
+            dvdl_menu_handler(logfile, "3")
 
-    elif configdata["top5"].lower() == "successful":
-        dvdl_menu_handler(logfile, "4")
+        elif configdata["top5"].lower() == "successful":
+            dvdl_menu_handler(logfile, "4")
 
-    if configdata["non-ovpn-prot"].lower() == "true":
-        dvdl_menu_handler(logfile, "5")
+    with suppress(KeyError):
+        if configdata["non-ovpn-prot"].lower() == "true":
+            dvdl_menu_handler(logfile, "5")
 
-    if configdata["man-coms"].lower() == "true":
-        dvdl_menu_handler(logfile, "6")
+    with suppress(KeyError):
+        if configdata["man-coms"].lower() == "true":
+            dvdl_menu_handler(logfile, "6")
 
-    if configdata["check-ip"].lower() == "true":
-        dvdl_menu_handler(logfile, "7")
+    with suppress(KeyError):
+        if configdata["check-ip"].lower() == "true":
+            dvdl_menu_handler(logfile, "7")
 
-    if configdata["knownip-file"].lower() != "false" and configdata["new-ips"].lower() != "false":
-        knownip = dvdl_check_file_location(configdata["knownip-file"], "knownip-file")
-        dvdl_menu_handler(logfile, "8", ipfile=knownip)
+    with suppress(KeyError):
+        if configdata["knownip-file"].lower() != "false" and configdata["new-ips"].lower() != "false":
+            #Check if the knownip-file exists
+            knownip = dvdl_check_file_location(configdata["knownip-file"], "knownip-file")
+            dvdl_menu_handler(logfile, "8", ipfile=knownip)
 
 
 ##########Run at boot code##########
@@ -822,11 +843,20 @@ except KeyboardInterrupt:
             # And write the, otherwise printed, statement to the file
             resultfile.write("\n\nOperation cancelled by user\n\n")
 
+            #Write a breakline to the file to make it more organised
+            resultfile.write("====================================================================================================\n\n")
+
     #And stop the program
     exit()
 
 #To make the exit-statements in the code work without unnecissairy messages
 except SystemExit:
+    # If the output needs to be written to a file...
+    if arguments.printer:
+        # Open the file
+        with open("result.txt", "a") as resultfile:
+            # Write a breakline to the file to make it more organised
+            resultfile.write("====================================================================================================\n\n")
     exit()
 
 #If an unknown error ocured...
@@ -842,4 +872,14 @@ except:
         with open("result.txt", "a") as resultfile:
             # And write the, otherwise printed, statement to the file
             resultfile.write("\n\nSomething went wrong\n\n")
+
+            #Write a breakline to the file to make it more organised
+            resultfile.write("====================================================================================================\n\n")
     exit()
+
+# If the output needs to be written to a file...
+if arguments.printer:
+    # Open the file
+    with open("result.txt", "a") as resultfile:
+        # Write a breakline to the file to make it more organised
+        resultfile.write("\n\n====================================================================================================\n\n")

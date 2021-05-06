@@ -2,9 +2,9 @@
     "logfile": "openvpn.log",
     "top10": "Unsuccessful",
     "top5": "False",
-    "non-ovpn-prot": "False",
-    "man-coms": "False",
-    "check-ip": "False",
-    "new-ips": "False",
-    "knownip-file": "knownip-location"
+    "non-ovpn-prot": "True",
+    "man-coms": "True",
+    "check-ip": "[192.168.192.10, 92.108.151.139, 63.59.64.32]",
+    "new-ips": "True",
+    "knownip-file": "knownip.txt"
 }
