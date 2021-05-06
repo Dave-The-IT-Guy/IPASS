@@ -2,5 +2,6 @@ https://martin-thoma.com/configuration-files-in-python
 https://docs.python.org/3/library/
 https://linuxhint.com/add_command_line_arguments_to_a_python_script
 https://docs.python.org/3/library/argparse.html
+https://www.geeksforgeeks.org/how-to-convert-python-dictionary-to-json/
 
 rest staat in de code vermeld

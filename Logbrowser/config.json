@@ -4,7 +4,9 @@
     "top5": "False",
     "non-ovpn-prot": "False",
     "man-coms": "False",
-    "check-ip": "False",
-    "new-ips": "False",
-    "knownip-file": "knownip.txt"
+    "check-ip": [
+        "92.108.151.139",
+        "10.0.0.1"
+    ],
+    "new-ips": "False"
 }

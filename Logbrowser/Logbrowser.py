@@ -286,30 +286,263 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
         if choice == "10":
             #Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
-            
+
+            #Create an empty dictionairy to store all the answers
+            answers = {}
+
+            #Let the user know what's going to happen
+            print("\n\nYou are now presented with couple of questions to make sure the logfile fits your needs. You can (almost) always press return to skip a question. If you skip a question it will be answerd with no.\n")
+
+            #Get the location of the logfile
+            while True:
+                #Ask the location of the logfile
+                logfile = input("What is the location of the logfile: ")
+
+                #If no answer was provided...
+                if logfile == "":
+                    #Aks the user to try again
+                    print("\nThis question is unskippable. Please provide a valid answer\n")
+
+                #If an answer was provided...
+                else:
+                    #Update the dictionairy
+                    answers.update({"logfile": logfile})
+
+                    #And stop the loop
+                    break
+
+            #Check if a top 10 needs to be added
+            while True:
+                #Ask if a top 10 needs to be added
+                top10 = input("Do you want to show a top 10 of (un)successful connections [unsuccessful/successful/no]: ")
+
+                # If the question was skipped or answerd with no...
+                if top10 == "" or top10[0].lower() == "n":
+                    # Then add the answer to the dictionairy
+                    answers.update({"top10": "False"})
+
+                    #And stop the loop
+                    break
+
+                # If the user wants a top 10 of successful connections...
+                elif top10[0].lower() == "s":
+                    # Then add the answer to the dictionairy
+                    answers.update({"top10": "Successful"})
+
+                    #And stop the loop
+                    break
+
+                # If the user wants a top 10 of unsuccessful connections...
+                elif top10[0].lower() == "u":
+                    # Then add the answer to the dictionairy
+                    answers.update({"top10": "Unsuccessful"})
+
+                    #And stop the loop
+                    break
+
+                #If no valid answer was provided...
+                else:
+                    # Let the user know
+                    print("\nPlease provide a valid answer\n")
+
+            # Check if a top 5 needs to be added
+            while True:
+                # Ask if a top 5 needs to be added
+                top5 = input("Do you want to show a top 5 of days with the most (un)successful connections [unsuccessful/successful/no]: ")
+
+                #If the question was skipped or answerd with no...
+                if top5 == "" or top5[0].lower() == "n":
+                    # Then add the answer to the dictionairy
+                    answers.update({"top5": "False"})
+
+                    #And stop the loop
+                    break
+
+                # If the user wants a top 5 of days with the most successful connections
+                elif top5[0].lower() == "s":
+                    # Then add the answer to the dictionairy
+                    answers.update({"top5": "Successful"})
+
+                    #And stop the loop
+                    break
+
+                # If the user wants a top 5 of days with the most unsuccessful connections
+                elif top5[0].lower() == "u":
+                    # Then add the answer to the dictionairy
+                    answers.update({"top5": "Unsuccessful"})
+
+                    #And stop the loop
+                    break
+
+                # If no valid answer was provided...
+                else:
+                    # Let the user know
+                    print("\nPlease provide a valid answer\n")
+
+            #Check if the connections that weren't made with ovpn need to be added
+            while True:
+                # Ask the user if the connections that weren't made with ovpn need to be added
+                protocol = input("Do you want to show all the connections that weren't made with the OVPN protocol [yes/no]: ")
+
+                # If the question was skipped or answerd with no...
+                if protocol == "" or protocol[0].lower() == "n":
+                    # Then add the answer to the dictionairy
+                    answers.update({"non-ovpn-prot": "False"})
+
+                    #And stop the loop
+                    break
+
+                # If the question was answerd with yes...
+                elif protocol[0].lower() == "y":
+                    # Then add the answer to the dictionairy
+                    answers.update({"non-ovpn-prot": "True"})
+
+                    # And stop the loop
+                    break
+
+                # If no valid answer was provided...
+                else:
+                    # Let the user know
+                    print("\nPlease provide a valid answer\n")
+
+            # Check if all used management commando's need to added
+            while True:
+                # Ask if all used management commando's need to be added
+                management = input("Do you want to show all used management commando's [yes/no]: ")
+
+                # If the question was skipped or answerd with no...
+                if management == "" or management[0].lower() == "n":
+                    # Then add the answer to the dictionairy
+                    answers.update({"man-coms": "False"})
+
+                    # And stop the loop
+                    break
+
+                # If the question was answerd with yes...
+                elif management[0].lower() == "y":
+                    # Then add the answer to the dictionairy
+                    answers.update({"man-coms": "True"})
+
+                    # And stop the loop
+                    break
+
+                # If no valid answer was provided...
+                else:
+                    # Let the user know
+                    print("\nPlease provide a valid answer\n")
+
+            #Ask which IP's need to be checked
+            checkip = input("Which IP's do you want to check (space seperated): ")
+
+            #Is later used to check if the user skipped the question
+            skipped = False
+
+            # If no IP needs to be checked
+            if checkip == "":
+                #Makes sure the question is skipped
+                skipped = True
+
+            #If there are IP's to check...
+            else:
+
+                #Make a list of all IP's
+                checkip = checkip.split(" ")
+
+                #Create an empty list to store all IP)'s in
+                ips = []
+
+                #Check if all IP -adresses are valid
+                for ip in checkip:
+                    # Regex to check if the IP is valid or if a * is provided
+                    ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}\b|^\*$", ip)[0]  # To test: https://regex101.com/
+
+                    # If the IP is valid...
+                    if ip != []:
+                        # Add it to the list with IP's
+                        ips.append(ip)
+
+            # If some of the IP's are valid...
+            if skipped and len(ips) > 0:
+                # Let the user know
+                print("\nSome of the provided IP's were invalid. The invalid IP's were skipped")
+
+                # Add the valid IP's to the dictionairy
+                answers.update({"check-ip": ips})
+
+            #If the question is skipped
+            elif skipped:
+                # Then add the answer to the dictionairy
+                answers.update({"check-ip": "False"})
+
+            # If none of the provided IP's are valid...
+            elif len(ips) == 0:
+                # Let the user know
+                print("\nNone of the provided IP's were valid. The question is skipped")
+
+                # Then add the answer to the dictionairy
+                answers.update({"check-ip": "False"})
+
+            # If all the IP's are valid
+            else:
+                # Then add the answer to the dictionairy
+                answers.update({"check-ip": ips})
+
+            # Check if all new IP's need to be added
+            while True:
+                # Ask if all new IP's need to be added
+                newip = input("Do you want to know all the new IP's [yes/no]: ")
+
+                # If the question was skipped or answered with no...
+                if newip == "" or newip[0].lower() == "n":
+                    # Then add the answer to the dictionairy
+                    answers.update({"new-ips": "False"})
+
+                    # And stop the loop
+                    break
+
+                # If the question was answered with yes...
+                elif newip[0].lower() == "y":
+                    # Then add the answer to the dictionairy
+                    answers.update({"new-ips": "True"})
+
+                    # And ask the user the location of the knownip-file
+                    knowip = input("What is the location of the knownip-file: ")
+
+                    # Then add the answer to the dictionairy
+                    answers.update({"knowip-file": knowip})
+
+                    # And stop the loop
+                    break
+
+                # If no valid answer was provided...
+                else:
+                    # Let the user know
+                    print("\nPlease provide a valid answer\n")
+
+            #Source: https://www.geeksforgeeks.org/how-to-convert-python-dictionary-to-json/
+            with open("config.json", "w") as configfile:
+                json.dump(answers, configfile, indent=4)
+
             # Let the user know the program is generating the requested info
             print("\nGenerating...\n")
 
-            #TODO: Vragen stellen aan de user (wat moet er in de configfile) en die opslaan in een dict. Die dict daarna met de jsonmodule wegschrijven naar een bestand
+    if choice == "11":
+        #Since a valid option was chosen the errormessage doesn't need to be displayed
+        error = False
 
-    with suppress(AttributeError):
-        if choice == "11":
-            #Since a valid option was chosen the errormessage doesn't need to be displayed
-            error = False
-            
-            # Let the user know the program is generating the requested info
-            print("\nGenerating...\n")
-            pass
+        # Let the user know the program is generating the requested info
+        print("\nGenerating...\n")
+        pass
 
-        if choice == "12":
-            #Since a valid option was chosen the errormessage doesn't need to be displayed
-            error = False
-            
-            #Stop the program
-            exit()
-    
-        if error:
-            print("You selected an invalid choice. Please try again")
+    if choice == "12":
+        #Since a valid option was chosen the errormessage doesn't need to be displayed
+        error = False
+
+        #Stop the program
+        exit()
+
+    if error:
+        print("You selected an invalid choice. Please try again")
 
 
 #Retrieve all data from the logfile and filter it
@@ -696,7 +929,7 @@ def dvdl_check_file_location(file, filename, **kwargs):
 
         # Try to ask the user for another file location
         try:
-            if choice[0] == "y" or choice[0] == "Y":
+            if choice[0].lower() == "y":
                 # Ask for anoher location
                 file = input(f"What is the location of the {filename}: ")
 
@@ -711,7 +944,7 @@ def dvdl_check_file_location(file, filename, **kwargs):
                     fnf = True
 
             # If the user doesn't want to change te file...
-            elif choice[0] == "n" or choice[0] == "N":
+            elif choice[0].lower() == "n":
                 # Stop the program
                 print("\nOperatation canceled by user")
                 exit()
