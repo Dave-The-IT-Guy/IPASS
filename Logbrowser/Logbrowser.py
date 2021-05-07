@@ -228,35 +228,36 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
             #Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
 
-        # Check if the output needs to be written to a file
-        if not arguments.printer:
-            # Let the user know the program is generating the requested info
-            print("\nGenerating...\n")
-
         #If chosen by menu:
         if choice == "7" and not arguments.printer:
             #Ask which IP's needs to be checked
             checkip = input("Type one or more IP-address to check it (space seperated): ")
 
+        # Check if the output needs to be written to a file
+        if not arguments.printer:
+            # Let the user know the program is generating the requested info
+            print("\nGenerating...\n")
+        
+        if type(checkip) != list:
             #Make a list of all the given IP's
             checkip = checkip.split(" ")
+        
+        #Loop trough the IP's and...
+        for ip in checkip:
+            #Call the function
+            results = dvdl_check_ip(logfile, ip)
 
-            #Loop trough the IP's and...
-            for ip in checkip:
-                #Call the function
-                results = dvdl_check_ip(logfile, ip)
+            #If the IP is valid and the results need to be printed than show the results
+            if results != None and not arguments.printer:
+                #Show the result to the user
+                print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
 
-                #If the IP is valid and the results need to be printed than show the results
-                if results != None and not arguments.printer:
-                    #Show the result to the user
-                    print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
-
-                #If the IP is valid and output needs to be written to a file...
-                elif results != None:
-                    # Open the file
-                    with open("result.txt", "a") as resultfile:
-                        # And write the, otherwise printed, statement to the file
-                        resultfile.write(f"\n\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}")
+            #If the IP is valid and output needs to be written to a file...
+            elif results != None:
+                # Open the file
+                with open("result.txt", "a") as resultfile:
+                    # And write the, otherwise printed, statement to the file
+                    resultfile.write(f"\n\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}")
 
     with suppress(AttributeError):
         if choice == "8" or choice.shownip:
