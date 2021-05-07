@@ -1,7 +1,7 @@
 # Name: Dave van der Leek (1777075)
 # Class:
 # Program: OVPNLogbrowser
-# Description: Een programma om OpenVPN logfiles uit te lezen
+# Description: A program to read logfiles
 version = 0.1
 
 
@@ -22,7 +22,7 @@ parser.add_argument("-i", "--check-ip", help="check one or more ip-addresses for
 parser.add_argument("-k", "--knownipfile-location", help="path to the knownip file", default="knownip.txt", dest="knownip")
 parser.add_argument("-l", "--logfile-location", help="path to the OpenVPN logfile", default="openvpn.log", dest="logfile")
 parser.add_argument("-m", "--used-management-commands", help="show all used management commands", action="store_true", dest="management")
-parser.add_argument("-n", "--new-ips", help="show all new IP-adresses", action="store_true", dest="shownip")
+parser.add_argument("-n", "--new-ips", help="show all new IP-addresses", action="store_true", dest="shownip")
 parser.add_argument("-p", "--non-openvpn-protocol", help="show how many connections weren't made with the OpenVPN protocol", action="store_true", dest="openvpnprot")
 parser.add_argument("-s", "--save-output", help="determines if the output should be shown or written to a file", action="store_true", dest="printer")
 parser.add_argument("-t", "--top10-connection-ips", help="show the top 10 (failed) connection attempts", choices=["failed", "successful"], dest="top10")
@@ -40,8 +40,8 @@ def dvdl_show_menu(logfile):
     "4.  Show me the top 5 days with the most successful connections\n"
     "5.  Show me how many connections weren't made with OpenVPN\n"
     "6.  Show me all used management commands\n"
-    "7.  I want to check an IP-adres for attempted connection's\n"
-    "8.  Show me all new IP-adresses\n"
+    "7.  I want to check an IP-address for attempted connection's\n"
+    "8.  Show me all new IP-addresses\n"
     "9.  I want to create a new knownip file\n"
     "10. I want to create a new configuration file\n"
     "11. Show me all the program parameters\n"
@@ -231,7 +231,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
         # If chosen by menu:
         if choice == "7" and not arguments.printer:
             # Ask which IP's needs to be checked
-            checkip = input("Type one or more IP-address to check it (space seperated): ")
+            checkip = input("Type one or more IP-address to check it (space separated): ")
 
         # Check if the output needs to be written to a file
         if not arguments.printer:
@@ -288,11 +288,11 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
             # Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
 
-            # Create an empty dictionairy to store all the answers
+            # Create an empty dictionary to store all the answers
             answers = {}
 
             # Let the user know what's going to happen
-            print("\n\nYou are now presented with couple of questions to make sure the logfile fits your needs. You can (almost) always press return to skip a question. If you skip a question it will be answerd with no.\n")
+            print("\n\nYou are now presented with couple of questions to make sure the logfile fits your needs. You can (almost) always press return to skip a question. If you skip a question it will be answered with no.\n")
 
             # Get the location of the logfile
             while True:
@@ -302,11 +302,11 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                 # If no answer was provided...
                 if logfile == "":
                     # Aks the user to try again
-                    print("\nThis question is unskippable. Please provide a valid answer\n")
+                    print("\nThis question is unstoppable. Please provide a valid answer\n")
 
                 # If an answer was provided...
                 else:
-                    # Update the dictionairy
+                    # Update the dictionary
                     answers.update({"logfile": logfile})
 
                     # And stop the loop
@@ -317,9 +317,9 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                 # Ask if a top 10 needs to be added
                 top10 = input("Do you want to show a top 10 of (un)successful connections [unsuccessful/successful/no]: ")
 
-                # If the question was skipped or answerd with no...
+                # If the question was skipped or answered with no...
                 if top10 == "" or top10[0].lower() == "n":
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"top10": "False"})
 
                     # And stop the loop
@@ -327,7 +327,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
 
                 # If the user wants a top 10 of successful connections...
                 elif top10[0].lower() == "s":
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"top10": "Successful"})
 
                     # And stop the loop
@@ -335,7 +335,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
 
                 # If the user wants a top 10 of unsuccessful connections...
                 elif top10[0].lower() == "u":
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"top10": "Unsuccessful"})
 
                     # And stop the loop
@@ -351,9 +351,9 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                 # Ask if a top 5 needs to be added
                 top5 = input("Do you want to show a top 5 of days with the most (un)successful connections [unsuccessful/successful/no]: ")
 
-                # If the question was skipped or answerd with no...
+                # If the question was skipped or answered with no...
                 if top5 == "" or top5[0].lower() == "n":
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"top5": "False"})
 
                     # And stop the loop
@@ -361,7 +361,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
 
                 # If the user wants a top 5 of days with the most successful connections
                 elif top5[0].lower() == "s":
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"top5": "Successful"})
 
                     # And stop the loop
@@ -369,7 +369,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
 
                 # If the user wants a top 5 of days with the most unsuccessful connections
                 elif top5[0].lower() == "u":
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"top5": "Unsuccessful"})
 
                     # And stop the loop
@@ -383,19 +383,19 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
             # Check if the connections that weren't made with ovpn need to be added
             while True:
                 # Ask the user if the connections that weren't made with ovpn need to be added
-                protocol = input("Do you want to show all the connections that weren't made with the OVPN protocol [yes/no]: ")
+                protocol = input("Do you want to show all the connections that weren't made with the OpenVPN protocol [yes/no]: ")
 
-                # If the question was skipped or answerd with no...
+                # If the question was skipped or answered with no...
                 if protocol == "" or protocol[0].lower() == "n":
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"non-ovpn-prot": "False"})
 
                     # And stop the loop
                     break
 
-                # If the question was answerd with yes...
+                # If the question was answered with yes...
                 elif protocol[0].lower() == "y":
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"non-ovpn-prot": "True"})
 
                     # And stop the loop
@@ -411,17 +411,17 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                 # Ask if all used management commands need to be added
                 management = input("Do you want to show all used management commands [yes/no]: ")
 
-                # If the question was skipped or answerd with no...
+                # If the question was skipped or answered with no...
                 if management == "" or management[0].lower() == "n":
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"man-coms": "False"})
 
                     # And stop the loop
                     break
 
-                # If the question was answerd with yes...
+                # If the question was answered with yes...
                 elif management[0].lower() == "y":
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"man-coms": "True"})
 
                     # And stop the loop
@@ -433,7 +433,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                     print("\nPlease provide a valid answer\n")
 
             # Ask which IP's need to be checked
-            checkip = input("Which IP's do you want to check (space seperated): ")
+            checkip = input("Which IP's do you want to check (space separated): ")
 
             # Is later used to check if the user skipped the question
             skipped = False
@@ -454,7 +454,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
             
             # Try to get an IP from the string
             try:
-                # Check if all IP -adresses are valid
+                # Check if all IP -addresses are valid
                 for ip in checkip:
                     # Regex to check if the IP is valid or if a * is provided
                     ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}\b|^\*$", ip)[0]  # To test: https://regex101.com/
@@ -463,12 +463,13 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                     if ip != []:
                         # Add it to the list with IP's
                         ips.append(ip)
+                
                 # If some of the IP's are valid...
                 if skipped and len(ips) > 0:
                     # Let the user know
                     print("\nSome of the provided IP's were invalid. The invalid IP's were skipped")
 
-                    # Add the valid IP's to the dictionairy
+                    # Add the valid IP's to the dictionary
                     answers.update({"check-ip": ips})
 
                 # If none of the provided IP's are valid...
@@ -476,17 +477,17 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                     # Let the user know
                     print("\nNone of the provided IP's were valid. The question is skipped")
 
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"check-ip": "False"})
 
                 # If all the IP's are valid
                 else:
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"check-ip": ips})
 
             # If the question is skipped
             except UnboundLocalError:
-                # Then add the answer to the dictionairy
+                # Then add the answer to the dictionary
                 answers.update({"check-ip": "False"})
             
             # If an invalid string was given...
@@ -494,7 +495,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                 # Let the user know
                 print("\nAn invalid answer as given. The question is skipped\n")
 
-                # Then add the answer to the dictionairy
+                # Then add the answer to the dictionary
                 answers.update({"check-ip": "False"})
                 
             # Check if all new IP's need to be added
@@ -504,7 +505,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
 
                 # If the question was skipped or answered with no...
                 if newip == "" or newip[0].lower() == "n":
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"new-ips": "False"})
 
                     # And stop the loop
@@ -512,13 +513,13 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
 
                 # If the question was answered with yes...
                 elif newip[0].lower() == "y":
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"new-ips": "True"})
 
                     # And ask the user the location of the knownip-file
                     knowip = input("What is the location of the knownip-file: ")
 
-                    # Then add the answer to the dictionairy
+                    # Then add the answer to the dictionary
                     answers.update({"knownip-file": knowip})
 
                     # And stop the loop
@@ -545,7 +546,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
               "Action: Shows all parameters and it's info\n\n"
               "Parameters: -c {path}, --configfile {path}\n"
               "Action: Path to the configuration file\n\n"
-              "Parameters: -d {unsuccessful, successful}, --top5-conncection-days {unsuccessful, successful}\n"
+              "Parameters: -d {unsuccessful, successful}, --top5-connection-days {unsuccessful, successful}\n"
               "Action: Shows a top 5 of the days with the most (un)successful connections\n\n"
               "Parameters: -g, --show-menu\n"
               "Action: Shows the menu\n\n"
@@ -555,7 +556,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
               "Action: Path to the knownip file\n\n"
               "Parameters: -l {path}, --logfile-location {path}\n"
               "Action: Path to the OpenVPN logfile\n\n"
-              "Parameters: -m, --used-mamangement-commands\n"
+              "Parameters: -m, --used-management-commands\n"
               "Action: Shows all used management commands\n\n"
               "Parameters: -n, --new-ips\n"
               "Action: Shows all new IP-addresses\n\n"
@@ -564,7 +565,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
               "Parameters: -s --save-output\n"
               "Action: Saves all output to the result.txt file\n\n"
               "Parameters: -t  {unsuccessful, successful}, --top10-connection-ips {unsuccessful, successful}\n"
-              "Action: Shows a top 10 of the IP-adresses with the most (un)successful connections\n")
+              "Action: Shows a top 10 of the IP-addresses with the most (un)successful connections\n")
 
     if choice == "12":
         # Stop the program
@@ -588,7 +589,7 @@ def dvdl_filter_logfile(file, **kwargs):
                 
                 # Comment here
                 if not arguments.printer:
-                    # If the identiefier isn't present let the user choose another file
+                    # If the identifier isn't present let the user choose another file
                     print("This doesn't seem to be an OpenVPN-logfile. Please select another file")
                     file = dvdl_check_file_location("", "OpenVPN-logfile", fnf=False)
 
@@ -653,7 +654,7 @@ def dvdl_top10_inlog(logfile, unsuccessful):
         # Make a list of all successful attempts
         filtered = dvdl_filter_logfile(logfile, filter1="TLS: Initial packet")
 
-    # Make an empty dictionairy to count the IP-addresses
+    # Make an empty dictionary to count the IP-addresses
     counter = {}
 
     # Loop trough all filtered results
@@ -661,19 +662,19 @@ def dvdl_top10_inlog(logfile, unsuccessful):
         # Extract the IP-address from the string...
         ip = (re.findall(r"\b(?:[0-9]{1,3}\.){3}(?:[0-9]{1,3}){1}\b", string))[0] # To test: https://regex101.com/
 
-        # If the IP is already in the dictionairy than add 1
+        # If the IP is already in the dictionary than add 1
         if ip in counter:
             i = counter.get(ip)
             i += 1
             counter.update({ip: i})
 
-        # If the IP isn't in the dictionairy than add it
+        # If the IP isn't in the dictionary than add it
         else:
             counter.update({ip: 1})
 
     # Source: https://stackabuse.com/how-to-sort-dictionary-by-value-in-python/
     
-    # Create an empty dictionairy to store the sorted values in
+    # Create an empty dictionary to store the sorted values in
     sorted_counter = {}
 
     # Create an list with only sorted values
@@ -686,9 +687,9 @@ def dvdl_top10_inlog(logfile, unsuccessful):
     # Create an empty list to store the result
     result = []
 
-    # Grab all keys from the dictionairy and put them in a list
+    # Grab all keys from the dictionary and put them in a list
     keys = list(sorted_counter.keys())
-    # Grab all values from the dictionairy and put them in a list
+    # Grab all values from the dictionary and put them in a list
     values = list(sorted_counter.values())
     
     # If no results are available...
@@ -698,7 +699,7 @@ def dvdl_top10_inlog(logfile, unsuccessful):
     # Try to fill the list with results
     with suppress(IndexError):
         # Create a top 10
-        for i in range(0,10):
+        for i in range(0, 10):
             # Append the results
             if i < len(sorted_counter):
                 result.append([keys[i], values[i]])
@@ -712,7 +713,7 @@ def dvdl_non_ovpn_prot_counter(logfile):
     # Filter the logfile
     connections = dvdl_filter_logfile(logfile, filter1="Non-OpenVPN client protocol detected")
 
-    # Since one entry is one hit, take the lenght of the list and return it (number)
+    # Since one entry is one hit, take the length of the list and return it (number)
     return len(connections)
 
 
@@ -721,7 +722,7 @@ def dvdl_used_management_commands(logfile):
     # Filter the logfile
     logdata = dvdl_filter_logfile(logfile, filter1="MANAGEMENT: CMD")
 
-    # Make an empty dictionairy to count the management commands
+    # Make an empty dictionary to count the management commands
     counter = {}
 
     for logline in logdata:
@@ -730,20 +731,19 @@ def dvdl_used_management_commands(logfile):
         # Remove the ' characters from the string
         command = command.replace("\'", "")
 
-
-        # If the command is already in the dictionairy than add 1
+        # If the command is already in the dictionary than add 1
         if command in counter:
             i = counter.get(command)
             i += 1
             counter.update({command: i})
 
-        # If the command isn't in the dictionairy than add it
+        # If the command isn't in the dictionary than add it
         else:
             counter.update({command: 1})
 
     # Source: https://stackabuse.com/how-to-sort-dictionary-by-value-in-python/
 
-    # Create an empty dictionairy to store the sorted values in
+    # Create an empty dictionary to store the sorted values in
     sorted_counter = {}
 
     # Create an list with only sorted values
@@ -756,9 +756,9 @@ def dvdl_used_management_commands(logfile):
     # Create an empty list to store the result
     result = []
 
-    # Grab all keys from the dictionairy and put them in a list
+    # Grab all keys from the dictionary and put them in a list
     keys = list(sorted_counter.keys())
-    # Grab all values from the dictionairy and put them in a list
+    # Grab all values from the dictionary and put them in a list
     values = list(sorted_counter.values())
 
     # Create a top 10
@@ -771,13 +771,13 @@ def dvdl_used_management_commands(logfile):
 
 # Check an IP-address for attempted connections
 def dvdl_check_ip(logfile, ip):
-    # If a star was given as IP than make it an empty string to filter succesfully
+    # If a star was given as IP than make it an empty string to filter successfully
     if ip == "*":
         ip = ""
     # If the wildcard was not provided check if the IP is valid
     else:
         # Regex to check if the IP is valid
-        ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}\b", ip) # To test: https://regex101.com/
+        ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}\b", ip)  # To test: https://regex101.com/
 
         # If the IP is not valid...
         if ip == [] and not arguments.printer:
@@ -786,7 +786,7 @@ def dvdl_check_ip(logfile, ip):
             # Since the IP was incorrect there's nothing to return
             return None
 
-        # If the output needst to be written to the file
+        # If the output needs to be written to the file
         elif ip == []:
             # Open the file
             with open("result.txt", "a") as resultfile:
@@ -824,7 +824,7 @@ def dvdl_show_all_new_ips(logfile, ipfile):
             if not (file.readline()).strip() == identifier:
                 
                 if not arguments.printer:
-                    # If the identiefier isn't present let the user choose another file
+                    # If the identifier isn't present let the user choose another file
                     print("The identifier isn't correct. Please select another file")
                     ipfile = dvdl_check_file_location("", "knownip-file", fnf=False)
 
@@ -833,7 +833,7 @@ def dvdl_show_all_new_ips(logfile, ipfile):
                     # Open the file
                     with open("result.txt", "a") as resultfile:
                         # And write the, otherwise printed, statement to the file
-                        resultfile.write("\n\nThe identiefier of the knownipfile isn't correct\n\n")
+                        resultfile.write("\n\nThe identifier of the knownipfile isn't correct\n\n")
             
             # If the identifier is present stop the loop
             else:
@@ -893,7 +893,6 @@ def dvdl_show_all_new_ips(logfile, ipfile):
             # Add the IP to the list with known IP's
             ips.append(ip)
     
-
     # Write all the (now) known IP's to the file
     with open(ipfile, "w") as knownips:
         knownips.write(identifier)
@@ -902,7 +901,7 @@ def dvdl_show_all_new_ips(logfile, ipfile):
             if ip != [] and ip != identifier:
                 knownips.write(f"\n{ip}")
 
-    # If no new IP's were detetected and the output needs to be printed...
+    # If no new IP's were detected and the output needs to be printed...
     if counter == 0 and not arguments.printer:
         print("No new IP-addresses found")
     
@@ -914,7 +913,7 @@ def dvdl_show_all_new_ips(logfile, ipfile):
     elif counter >= 2 and not arguments.printer:
         print(f"{counter} new IP-addresses found")
 
-    # If no new IP's were detetected and the output needs to be written to a file...
+    # If no new IP's were detected and the output needs to be written to a file...
     elif counter == 0:
         # Open the file
         with open("result.txt", "a") as resultfile:
@@ -967,7 +966,7 @@ def dvdl_check_file_location(file, filename, **kwargs):
         # Try to ask the user for another file location
         try:
             if choice[0].lower() == "y":
-                # Ask for anoher location
+                # Ask for another location
                 file = input(f"What is the location of the {filename}: ")
 
                 # Try the path
@@ -983,15 +982,15 @@ def dvdl_check_file_location(file, filename, **kwargs):
             # If the user doesn't want to change te file...
             elif choice[0].lower() == "n":
                 # Stop the program
-                print("\nOperatation canceled by user")
+                print("\nOperation canceled by user")
                 exit()
 
-            # If the user didin't answer correctly...
+            # If the user didn't answer correctly...
             else:
                 # Let the except handle the rest
                 raise IndexError
 
-        # If the user didin't answer correctly...
+        # If the user didn't answer correctly...
         except IndexError:
             # Let them know
             print("\nPlease give a valid answer\n")
@@ -1004,7 +1003,7 @@ def dvdl_check_file_location(file, filename, **kwargs):
 # Handles the configuration file
 def dvdl_config_handler(configfile):
 
-    # Open the configfile and convert it to an dictionairy
+    # Open the configfile and convert it to an dictionary
     with open(configfile, "r") as json_file:
         configdata = json.load(json_file)
 
@@ -1013,7 +1012,7 @@ def dvdl_config_handler(configfile):
         logfile = dvdl_check_file_location(configdata["logfile"], "OpenVPN-logfile")
     except KeyError:
         with open("result.txt", "a") as resultfile:
-            resultfile.write("\n\nThe logfile entry from the configurationfile isn't present. Aborting program\n\n")
+            resultfile.write("\n\nThe logfile entry from the configuration file isn't present. Aborting program\n\n")
             exit()
     
     # Checks if the logfile is a valid logfile
@@ -1087,7 +1086,7 @@ try:
 
                 # If the output needs to be printed...
                 if not arguments.printer:
-                    # If the identiefier isn't present let the user choose another file
+                    # If the identifier isn't present let the user choose another file
                     print("This doesn't seem to be an OpenVPN-logfile. Please select another file")
                     file = dvdl_check_file_location("", "OpenVPN-logfile", fnf=False)
 
@@ -1117,7 +1116,7 @@ try:
     elif arguments.configfile == "":
         dvdl_menu_handler(logfile, arguments)
 
-# If the program is stopped by a keyboardinterrupt (crtl+c)...
+# If the program is stopped by a KeyboardInterrupt (crtl+c)...
 except KeyboardInterrupt:
     # If the output needs to be printed...
     if not arguments.printer:
@@ -1137,7 +1136,7 @@ except KeyboardInterrupt:
     # And stop the program
     exit()
 
-# To make the exit-statements in the code work without unnecissairy messages
+# To make the exit-statements in the code work without unnecessary messages
 except SystemExit:
     # If the output needs to be written to a file...
     if arguments.printer:
@@ -1147,7 +1146,7 @@ except SystemExit:
             resultfile.write("\n====================================================================================================\n")
     exit()
 
-# If an unknown error ocured...
+# If an unknown error occurred...
 except:
     # If the output needs to be printed...
     if not arguments.printer:
