@@ -6,7 +6,7 @@ version = 0.1
 
 
 ##########Imports##########
-import re # For regex
+import re
 import os
 import argparse
 from contextlib import suppress
