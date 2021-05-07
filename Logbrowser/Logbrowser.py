@@ -1,6 +1,6 @@
 #Name: Dave van der Leek (1777075)
 #Class:
-#Programname: OVPNLogbrowser
+#Program: OVPNLogbrowser
 #Description: Een programma om OpenVPN logfiles uit te lezen
 version = 0.1
 
@@ -236,7 +236,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
         # Check if the output needs to be written to a file
         if not arguments.printer:
             # Let the user know the program is generating the requested info
-            print("\nGenerating...\n")
+            print("\nGenerating...")
         
         if type(checkip) != list:
             #Make a list of all the given IP's
@@ -451,7 +451,9 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
 
                 #Create an empty list to store all IP)'s in
                 ips = []
-
+            
+            #Try to get an IP from the string
+            try:
                 #Check if all IP -adresses are valid
                 for ip in checkip:
                     # Regex to check if the IP is valid or if a * is provided
@@ -461,7 +463,6 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                     if ip != []:
                         # Add it to the list with IP's
                         ips.append(ip)
-            try:
                 # If some of the IP's are valid...
                 if skipped and len(ips) > 0:
                     # Let the user know
@@ -487,7 +488,15 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
             except UnboundLocalError:
                 # Then add the answer to the dictionairy
                 answers.update({"check-ip": "False"})
+            
+            #If an invalid string was given...
+            except IndexError:
+                # Let the user know
+                print("\nAn invalid answer as given. The question is skipped\n")
 
+                # Then add the answer to the dictionairy
+                answers.update({"check-ip": "False"})
+                
             # Check if all new IP's need to be added
             while True:
                 # Ask if all new IP's need to be added
@@ -662,10 +671,18 @@ def dvdl_top10_inlog(logfile, unsuccessful):
     keys = list(sorted_counter.keys())
     # Grab all values from the dictionairy and put them in a list
     values = list(sorted_counter.values())
-
-    #Create a top 10
-    for i in range(0,10):
-        result.append([keys[i], values[i]])
+    
+    #If no results are available...
+    if len(sorted_counter) == 0:
+        result.append(["No results available", 0])
+    
+    #Try to fill the list with results
+    with suppress(IndexError):
+        #Create a top 10
+        for i in range(0,10):
+            # Append the results
+            if i < len(sorted_counter):
+                result.append([keys[i], values[i]])
 
     #Return the result (list)
     return result
@@ -746,7 +763,7 @@ def dvdl_check_ip(logfile, ip):
         #If the IP is not valid...
         if ip == [] and not arguments.printer:
             #Let the user know the IP was incorrect
-            print("Please provide a valid IP")
+            print("\nPlease provide a valid IP")
             #Since the IP was incorrect there's nothing to return
             return None
 
@@ -979,6 +996,16 @@ def dvdl_config_handler(configfile):
         with open("result.txt", "a") as resultfile:
             resultfile.write("\n\nThe logfile entry from the configurationfile isn't present. Aborting program\n\n")
             exit()
+    
+    #Checks if the logfile is a valid logfile
+    with open(logfile, "r") as file:
+        # Check if the file looks like a logfile
+        if not re.findall(r"\d{4}(:\d{2}){2}-(\d{2}:){2}\d{2} \w+ openvpn\[\d{1,5}]:", file.readline()):
+                # Open the file
+                with open("result.txt", "a") as resultfile:
+                    # And write the, otherwise printed, statement to the file
+                    resultfile.write("\n\nThe submitted file doesn't seem to be an OpenVPN-logfile. Aborting program\n\n")
+                exit()
 
     #Check which functions need to be called
     with suppress(KeyError):
@@ -1017,6 +1044,17 @@ def dvdl_config_handler(configfile):
 ##########Run at boot code##########
 
 try:
+    # If the program is started with the configfile
+    if arguments.configfile != "":
+        # Make sure all output gets redirected to a file
+        arguments.printer = True
+    
+        # Call the function that handles the configfile
+        dvdl_config_handler(arguments.configfile)
+        
+        #And stop the program
+        exit()
+    
     #Check if the logfile location is correct
     logfile = dvdl_check_file_location(arguments.logfile, "OpenVPN-logfile")
     
@@ -1060,14 +1098,6 @@ try:
     elif arguments.configfile == "":
         dvdl_menu_handler(logfile, arguments)
 
-    # If the program is started with the configfile
-    else:
-        #Make sure all output gets redirected to a file
-        arguments.printer = True
-
-        #Call the function that handles the configfile
-        dvdl_config_handler(arguments.configfile)
-
 #If the program is stopped by a keyboardinterrupt (crtl+c)...
 except KeyboardInterrupt:
     # If the output needs to be printed...
@@ -1099,7 +1129,7 @@ except SystemExit:
     exit()
 
 #If an unknown error ocured...
-except:
+except SystemExit:
     # If the output needs to be printed...
     if not arguments.printer:
         # Print the message
