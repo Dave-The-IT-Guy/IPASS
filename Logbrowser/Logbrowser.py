@@ -21,7 +21,7 @@ parser.add_argument("-g", "--show-menu", help="when called the menu will be show
 parser.add_argument("-i", "--check-ip", help="check one or more ip-addresses for attempted connection(s)", nargs="*", dest="checkip")
 parser.add_argument("-k", "--knownipfile-location", help="path to the knownip file", default="knownip.txt", dest="knownip")
 parser.add_argument("-l", "--logfile-location", help="path to the OpenVPN logfile", default="openvpn.log", dest="logfile")
-parser.add_argument("-m", "--used-management-commands", help="show all used management commando's", action="store_true", dest="management")
+parser.add_argument("-m", "--used-management-commands", help="show all used management commands", action="store_true", dest="management")
 parser.add_argument("-n", "--new-ips", help="show all new IP-adresses", action="store_true", dest="shownip")
 parser.add_argument("-p", "--non-openvpn-protocol", help="show how many connections weren't made with the OpenVPN protocol", action="store_true", dest="openvpnprot")
 parser.add_argument("-s", "--save-output", help="determines if the output should be shown or written to a file", action="store_true", dest="printer")
@@ -39,7 +39,7 @@ def dvdl_show_menu(logfile):
     "3.  Show me the top 5 days with the most unsuccessful connections\n"
     "4.  Show me the top 5 days with the most successful connections\n"
     "5.  Show me how many connections weren't made with OpenVPN\n"
-    "6.  Show me all used management commando's\n"
+    "6.  Show me all used management commands\n"
     "7.  I want to check an IP-adres for attempted connection's\n"
     "8.  Show me all new IP-adresses\n"
     "9.  I want to create a new knownip file\n"
@@ -406,10 +406,10 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                     # Let the user know
                     print("\nPlease provide a valid answer\n")
 
-            # Check if all used management commando's need to added
+            # Check if all used management commands need to added
             while True:
-                # Ask if all used management commando's need to be added
-                management = input("Do you want to show all used management commando's [yes/no]: ")
+                # Ask if all used management commands need to be added
+                management = input("Do you want to show all used management commands [yes/no]: ")
 
                 # If the question was skipped or answerd with no...
                 if management == "" or management[0].lower() == "n":
@@ -540,14 +540,33 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
         #Since a valid option was chosen the errormessage doesn't need to be displayed
         error = False
 
-        # Let the user know the program is generating the requested info
-        print("\nGenerating...\n")
-        pass
+        # Shows all parameters
+        print("\nParameters: -h, --help\n"
+              "Action: Shows all parameters and it's info\n\n"
+              "Parameters: -c {path}, --configfile {path}\n"
+              "Action: Path to the configuration file\n\n"
+              "Parameters: -d {unsuccessful, successful}, --top5-conncection-days {unsuccessful, successful}\n"
+              "Action: Shows a top 5 of the days with the most (un)successful connections\n\n"
+              "Parameters: -g, --show-menu\n"
+              "Action: Shows the menu\n\n"
+              "Parameters: -i {ip}, --check-ip {ip}\n"
+              "Action: Checks one or more IP-addresses for attempted connections\n\n"
+              "Parameters: -k {path}, --knownipfile-location {path}\n"
+              "Action: Path to the knownip file\n\n"
+              "Parameters: -l {path}, --logfile-location {path}\n"
+              "Action: Path to the OpenVPN logfile\n\n"
+              "Parameters: -m, --used-mamangement-commands\n"
+              "Action: Shows all used management commands\n\n"
+              "Parameters: -n, --new-ips\n"
+              "Action: Shows all new IP-addresses\n\n"
+              "Parameters: -p, --non-openvpn-protocol\n"
+              "Action: Shows how many connections weren't made with the OpenVPN protocol\n\n"
+              "Parameters: -s --save-output\n"
+              "Action: Saves all output to the result.txt file\n\n"
+              "Parameters: -t  {unsuccessful, successful}, --top10-connection-ips {unsuccessful, successful}\n"
+              "Action: Shows a top 10 of the IP-adresses with the most (un)successful connections\n")
 
     if choice == "12":
-        #Since a valid option was chosen the errormessage doesn't need to be displayed
-        error = False
-
         #Stop the program
         exit()
 
