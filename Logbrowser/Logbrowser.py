@@ -14,7 +14,7 @@ import json
 
 
 ##########Arguments##########
-parser = argparse.ArgumentParser(description="A program to browse and analyse OpenVPN logfiles", exit_on_error=True)
+parser = argparse.ArgumentParser(description="A program to browse and analyse OpenVPN logfiles")
 parser.add_argument("-c", "--config-location", help="path to the configuration file", default="", dest="configfile")
 parser.add_argument("-d", "--top5-connection-days", help="show the top 5 of days with the most (un)successful connections", choices=["failed", "successful"], dest="top5")
 parser.add_argument("-g", "--show-menu", help="when called the menu will be showed", action="store_true", dest="gui")
