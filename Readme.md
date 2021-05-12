@@ -193,3 +193,4 @@ Om ervoor te kunnen zorgen dat alles werkt zijn de volgende bronnen gebruikt:
 - https://www.geeksforgeeks.org/how-to-convert-python-dictionary-to-json/
 - https://stackabuse.com/how-to-sort-dictionary-by-value-in-python/
 - https://stackoverflow.com/questions/10624937/convert-datetime-object-to-a-string-of-date-only-in-python
+- https://gist.github.com/shaunlebron/746476e6e7a4d698b373
