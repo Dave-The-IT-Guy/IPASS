@@ -134,22 +134,72 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                         resultfile.write(f"\n{position}: {result[0]} ({result[1]} {word})")
                 
     with suppress(AttributeError):
+        # If one of the first 2 choices were selected then...
         if choice == "3" or choice == "4" or choice.top5 == "unsuccessful" or choice.top5 == "successful":
             # Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
-
+        
             # Check if the output needs to be written to a file
             if not arguments.printer:
                 # Let the user know the program is generating the requested info
                 print("\nGenerating...\n")
-                print("option 3/4")
-
-            # If the output needs to be in the file:
-            else:
-                # Open the result file
-                with open("result.txt", "a") as resultfile:
-                    # And write the, otherwise printed, statement to the file
-                    resultfile.write("\n\noption 3/4")
+        
+            with suppress(AttributeError):
+                # Check which parameter the function needs and call the function
+                if choice == "3" or choice.top5 == "unsuccessful":
+                    results = dvdl_top5_dagen(logfile, unsuccessful=True)
+                
+                    # Check if the output needs to be written to a file
+                    if not arguments.printer:
+                        # Show the title
+                        print(f"Top 10 unsuccessful connections:")
+                
+                    # If the output needs to be in the file:
+                    else:
+                        # Open the result file
+                        with open("result.txt", "a") as resultfile:
+                            # And write the, otherwise printed, statement to the file
+                            resultfile.write("\n\nTop 10 unsuccessful connections:")
+        
+            with suppress(AttributeError):
+                if choice == "4" or choice.top5 == "successful":
+                    results = dvdl_top5_dagen(logfile, unsuccessful=False)
+                
+                    # Check if the output needs to be written to a file
+                    if not arguments.printer:
+                        # Show the title
+                        print(f"Top 10 successful connections:")
+                
+                    # If the output needs to be in the file:
+                    else:
+                        # Open the result file
+                        with open("result.txt", "a") as resultfile:
+                            # And write the, otherwise printed, statement to the file
+                            resultfile.write("\n\nTop 10 successful connections:")
+        
+            # A counter to show the positions
+            position = 0
+        
+            # Loop trough the results...
+            for result in results:
+                # Add one to count
+                position += 1
+            
+                # Check if it needs to be try or try's
+                word = "try's"
+                if result[1] == 1:
+                    word = "try"
+            
+                # Check if the outputs needs to be printed or not
+                if not arguments.printer:
+                    # And show it to the user
+                    print(f"{position}: {result[0]} ({result[1]} {word})")
+            
+                else:
+                    # Open the result file
+                    with open("result.txt", "a") as resultfile:
+                        # And write the, otherwise printed, statement to the file
+                        resultfile.write(f"\n{position}: {result[0]} ({result[1]} {word})")
             
             
 
@@ -700,6 +750,72 @@ def dvdl_top10_inlog(logfile, unsuccessful):
     with suppress(IndexError):
         # Create a top 10
         for i in range(0, 10):
+            # Append the results
+            if i < len(sorted_counter):
+                result.append([keys[i], values[i]])
+
+    # Return the result (list)
+    return result
+
+
+#Comment
+def dvdl_top5_dagen(logfile, unsuccessful):
+    # If it needs to be an top 10 of unsuccessful attempts than...
+    if unsuccessful:
+        # Make a list of all unsuccessful attempts
+        filtered = dvdl_filter_logfile(logfile, filter1="AUTH_FAILED")
+    
+    # If it needs to be an top 10 of successful attempts than...
+    else:
+        # Make a list of all successful attempts
+        filtered = dvdl_filter_logfile(logfile, filter1="TLS: Initial packet")
+
+    # Make an empty dictionary to count the IP-addresses
+    counter = {}
+
+    # Loop trough all filtered results
+    for string in filtered:
+        # Extract the date from the string...
+        ip = (re.findall(r"\b(?:\d{4}(?::{1}\d{2}){2})\b", string))[0]  # To test: https://regex101.com/
+
+        # If the IP is already in the dictionary than add 1
+        if ip in counter:
+            i = counter.get(ip)
+            i += 1
+            counter.update({ip: i})
+
+        # If the IP isn't in the dictionary than add it
+        else:
+            counter.update({ip: 1})
+
+    # Source: https://stackabuse.com/how-to-sort-dictionary-by-value-in-python/
+    
+    # Create an empty dictionary to store the sorted values in
+    sorted_counter = {}
+
+    # Create an list with only sorted values
+    sorted_counter_values = sorted(counter, key=counter.get, reverse=True)
+    
+    # Find the right key by the value
+    for item in sorted_counter_values:
+        sorted_counter[item] = counter[item]
+
+    # Create an empty list to store the result
+    result = []
+
+    # Grab all keys from the dictionary and put them in a list
+    keys = list(sorted_counter.keys())
+    # Grab all values from the dictionary and put them in a list
+    values = list(sorted_counter.values())
+    
+    # If no results are available...
+    if len(sorted_counter) == 0:
+        result.append(["No results available", 0])
+    
+    # Try to fill the list with results
+    with suppress(IndexError):
+        # Create a top 5
+        for i in range(0, 5):
             # Append the results
             if i < len(sorted_counter):
                 result.append([keys[i], values[i]])
