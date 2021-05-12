@@ -1,0 +1,80 @@
+
+
+Checked IP: 92.108.151.139
+Successful attempts: 22
+Unsuccessful attempts: 8
+Total attempts: 30
+
+
+====================================================================================================
+
+
+Top 10 successful connections:
+1: 85.146.24.215 (94 try's)
+2: 82.75.26.90 (38 try's)
+3: 82.151.171.179 (36 try's)
+4: 83.128.145.71 (35 try's)
+5: 84.83.95.216 (34 try's)
+6: 213.127.127.140 (33 try's)
+7: 145.89.158.5 (26 try's)
+8: 83.128.232.128 (25 try's)
+9: 82.174.125.114 (24 try's)
+10: 81.30.74.16 (24 try's)
+
+17193 connection(s) weren't made with the OpenVPN protocol
+
+1: status -1 (used 88 times)
+2: kill Martijn (used 1 time)
+3: kill admin (used 1 time)
+4: kill Majid (used 1 time)
+5: kill Thomas (used 1 time)
+6: kill Nand (used 1 time)
+====================================================================================================
+
+
+Top 10 successful connections:
+1: 85.146.24.215 (94 try's)
+2: 82.75.26.90 (38 try's)
+3: 82.151.171.179 (36 try's)
+4: 83.128.145.71 (35 try's)
+5: 84.83.95.216 (34 try's)
+6: 213.127.127.140 (33 try's)
+7: 145.89.158.5 (26 try's)
+8: 83.128.232.128 (25 try's)
+9: 82.174.125.114 (24 try's)
+10: 81.30.74.16 (24 try's)
+
+17193 connection(s) weren't made with the OpenVPN protocol
+
+1: status -1 (used 88 times)
+2: kill Martijn (used 1 time)
+3: kill admin (used 1 time)
+4: kill Majid (used 1 time)
+5: kill Thomas (used 1 time)
+6: kill Nand (used 1 time)
+====================================================================================================
+
+
+Checked IP: 92.108.151.139
+Successful attempts: 22
+Unsuccessful attempts: 8
+Total attempts: 30
+
+
+====================================================================================================
+
+
+Top 10 successful connections:
+1: 85.146.24.215 (94 try's)
+2: 82.75.26.90 (38 try's)
+3: 82.151.171.179 (36 try's)
+4: 83.128.145.71 (35 try's)
+5: 84.83.95.216 (34 try's)
+6: 213.127.127.140 (33 try's)
+7: 145.89.158.5 (26 try's)
+8: 83.128.232.128 (25 try's)
+9: 82.174.125.114 (24 try's)
+10: 81.30.74.16 (24 try's)
+
+17193 connection(s) weren't made with the OpenVPN protocol
+====================================================================================================

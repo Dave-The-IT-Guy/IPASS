@@ -16,16 +16,16 @@ import json
 ##########Arguments##########
 parser = argparse.ArgumentParser(description="A program to browse and analyse OpenVPN logfiles")
 parser.add_argument("-c", "--config-location", help="path to the configuration file", default="", dest="configfile")
-parser.add_argument("-d", "--top5-connection-days", help="show the top 5 of days with the most (un)successful connections", choices=["failed", "successful"], dest="top5")
-parser.add_argument("-g", "--show-menu", help="when called the menu will be showed", action="store_true", dest="gui")
-parser.add_argument("-i", "--check-ip", help="check one or more ip-addresses for attempted connection(s)", nargs="*", dest="checkip")
+parser.add_argument("-d", "--top5-connection-days", help="shows a top 5 of the days with the most (un)successful connections", choices=["unsuccessful", "successful"], dest="top5")
+parser.add_argument("-g", "--show-menu", help="shows the menu", action="store_true", dest="gui")
+parser.add_argument("-i", "--check-ip", help="checks one or more IP-addresses for attempted connections", nargs="*", dest="checkip")
 parser.add_argument("-k", "--knownipfile-location", help="path to the knownip file", default="knownip.txt", dest="knownip")
 parser.add_argument("-l", "--logfile-location", help="path to the OpenVPN logfile", default="openvpn.log", dest="logfile")
-parser.add_argument("-m", "--used-management-commands", help="show all used management commands", action="store_true", dest="management")
-parser.add_argument("-n", "--new-ips", help="show all new IP-addresses", action="store_true", dest="shownip")
-parser.add_argument("-p", "--non-openvpn-protocol", help="show how many connections weren't made with the OpenVPN protocol", action="store_true", dest="openvpnprot")
-parser.add_argument("-s", "--save-output", help="determines if the output should be shown or written to a file", action="store_true", dest="printer")
-parser.add_argument("-t", "--top10-connection-ips", help="show the top 10 (failed) connection attempts", choices=["failed", "successful"], dest="top10")
+parser.add_argument("-m", "--used-management-commands", help="shows all used management commands", action="store_true", dest="management")
+parser.add_argument("-n", "--new-ips", help="shows all new IP-addresses", action="store_true", dest="shownip")
+parser.add_argument("-p", "--non-openvpn-protocol", help="shows how many connections weren't made with the OpenVPN protocol", action="store_true", dest="openvpnprot")
+parser.add_argument("-s", "--save-output", help="saves all output to the result.txt file", action="store_true", dest="printer")
+parser.add_argument("-t", "--top10-connection-ips", help="shows a top 10 of the IP-addresses with the most (un)successful connections", choices=["unsuccessful", "successful"], dest="top10")
 arguments = parser.parse_args()
 
 
@@ -67,7 +67,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
     # Source: https://towardsdatascience.com/quick-python-tip-suppress-known-exception-without-try-except-a93ec34d3704
     with suppress(AttributeError):
         # If one of the first 2 choices were selected then...
-        if choice == "1" or choice == "2" or choice.top10 == "failed" or choice.top10 == "successful":
+        if choice == "1" or choice == "2" or choice.top10 == "unsuccessful" or choice.top10 == "successful":
             # Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
             
@@ -78,7 +78,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
             
             with suppress(AttributeError):
                 # Check which parameter the function needs and call the function
-                if choice == "1" or choice.top10 == "failed":
+                if choice == "1" or choice.top10 == "unsuccessful":
                     results = dvdl_top10_inlog(logfile, unsuccessful=True)
 
                     # Check if the output needs to be written to a file
@@ -134,7 +134,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                         resultfile.write(f"\n{position}: {result[0]} ({result[1]} {word})")
                 
     with suppress(AttributeError):
-        if choice == "3" or choice == "4" or choice.top5 == "failed" or choice.top5 == "successful":
+        if choice == "3" or choice == "4" or choice.top5 == "unsuccessful" or choice.top5 == "successful":
             # Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
 
@@ -457,7 +457,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                 # Check if all IP -addresses are valid
                 for ip in checkip:
                     # Regex to check if the IP is valid or if a * is provided
-                    ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}\b|^\*$", ip)[0]  # To test: https://regex101.com/
+                    ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-4]{1}[0-9]{1}|[2]{1}[5]{1}[0-5]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-4]{1}[0-9]{1}|[2]{1}[5]{1}[0-5]{1}){1}\b|^\*$", ip)[0]  # To test: https://regex101.com/
 
                     # If the IP is valid...
                     if ip != []:
@@ -777,7 +777,7 @@ def dvdl_check_ip(logfile, ip):
     # If the wildcard was not provided check if the IP is valid
     else:
         # Regex to check if the IP is valid
-        ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-5]{1}[0-9]{1}){1}\b", ip)  # To test: https://regex101.com/
+        ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-4]{1}[0-9]{1}|[2]{1}[5]{1}[0-5]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-4]{1}[0-9]{1}|[2]{1}[5]{1}[0-5]{1}){1}\b", ip)  # To test: https://regex101.com/
 
         # If the IP is not valid...
         if ip == [] and not arguments.printer:

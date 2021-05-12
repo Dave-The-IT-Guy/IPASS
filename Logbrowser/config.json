@@ -1,8 +1,8 @@
 {
     "logfile": "openvpn.log",
-    "top10": "True",
+    "top10": "Successful",
     "top5": "False",
-    "non-ovpn-prot": "False",
+    "non-ovpn-prot": "True",
     "man-coms": "False",
     "check-ip": "False",
     "new-ips": "False"
