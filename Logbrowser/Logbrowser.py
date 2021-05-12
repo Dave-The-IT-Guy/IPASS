@@ -1223,7 +1223,7 @@ try:
             else:
                 break
 
-    # If the GUI needs to be showed
+    # If the GCLI needs to be showed
     if arguments.gui:
         # Show the file version
         print(f"Program version: {version}")

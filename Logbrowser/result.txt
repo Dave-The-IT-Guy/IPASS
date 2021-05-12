@@ -78,3 +78,31 @@ Top 10 successful connections:
 
 17193 connection(s) weren't made with the OpenVPN protocol
 ====================================================================================================
+
+
+Something went wrong
+
+
+====================================================================================================
+
+
+1: status -1 (used 88 times)
+2: kill Martijn (used 1 time)
+3: kill admin (used 1 time)
+4: kill Majid (used 1 time)
+5: kill Thomas (used 1 time)
+6: kill Nand (used 1 time)
+
+Checked IP: 92.108.151.139
+Successful attempts: 22
+Unsuccessful attempts: 8
+Total attempts: 30
+
+Checked IP: 10.0.0.1
+Successful attempts: 0
+Unsuccessful attempts: 0
+Total attempts: 0
+
+New IP-addresses:
+No new IP-addresses found
+====================================================================================================
