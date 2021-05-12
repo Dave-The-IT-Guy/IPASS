@@ -758,7 +758,7 @@ def dvdl_top10_inlog(logfile, unsuccessful):
     return result
 
 
-#Comment
+# This function makes a top 5 days of the most (un)successful login attempts
 def dvdl_top5_dagen(logfile, unsuccessful):
     # If it needs to be an top 10 of unsuccessful attempts than...
     if unsuccessful:
