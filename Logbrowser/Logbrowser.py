@@ -457,7 +457,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                 # Check if all IP -addresses are valid
                 for ip in checkip:
                     # Regex to check if the IP is valid or if a * is provided
-                    ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-4]{1}[0-9]{1}|[2]{1}[5]{1}[0-5]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-4]{1}[0-9]{1}|[2]{1}[5]{1}[0-5]{1}){1}\b|^\*$", ip)[0]  # To test: https://regex101.com/
+                    ip = re.findall(r"^\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-4]{1}[0-9]{1}|[2]{1}[5]{1}[0-5]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-4]{1}[0-9]{1}|[2]{1}[5]{1}[0-5]{1}){1}\b$|^\*$", ip)[0]  # To test: https://regex101.com/
 
                     # If the IP is valid...
                     if ip != []:
@@ -777,7 +777,7 @@ def dvdl_check_ip(logfile, ip):
     # If the wildcard was not provided check if the IP is valid
     else:
         # Regex to check if the IP is valid
-        ip = re.findall(r"\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-4]{1}[0-9]{1}|[2]{1}[5]{1}[0-5]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-4]{1}[0-9]{1}|[2]{1}[5]{1}[0-5]{1}){1}\b", ip)  # To test: https://regex101.com/
+        ip = re.findall(r"^\b(?:(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-4]{1}[0-9]{1}|[2]{1}[5]{1}[0-5]{1}){1}[.]{1}){3}(?:[0-9]{1,2}|[1]{1}[0-9]{2}|[2]{1}[0-4]{1}[0-9]{1}|[2]{1}[5]{1}[0-5]{1}){1}\b$", ip)  # To test: https://regex101.com/
 
         # If the IP is not valid...
         if ip == [] and not arguments.printer:
