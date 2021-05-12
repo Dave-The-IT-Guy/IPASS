@@ -11,6 +11,7 @@ import os
 import argparse
 from contextlib import suppress
 import json
+from datetime import datetime
 
 
 ##########Arguments##########
@@ -134,7 +135,7 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                         resultfile.write(f"\n{position}: {result[0]} ({result[1]} {word})")
                 
     with suppress(AttributeError):
-        # If one of the first 2 choices were selected then...
+        # If option 3 or 4 was chosen...
         if choice == "3" or choice == "4" or choice.top5 == "unsuccessful" or choice.top5 == "successful":
             # Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
@@ -152,14 +153,14 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                     # Check if the output needs to be written to a file
                     if not arguments.printer:
                         # Show the title
-                        print(f"Top 10 unsuccessful connections:")
+                        print(f"Top 5 days with unsuccessful connections:")
                 
                     # If the output needs to be in the file:
                     else:
                         # Open the result file
                         with open("result.txt", "a") as resultfile:
                             # And write the, otherwise printed, statement to the file
-                            resultfile.write("\n\nTop 10 unsuccessful connections:")
+                            resultfile.write("\n\nTop 5 days with unsuccessful connections:")
         
             with suppress(AttributeError):
                 if choice == "4" or choice.top5 == "successful":
@@ -168,14 +169,14 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                     # Check if the output needs to be written to a file
                     if not arguments.printer:
                         # Show the title
-                        print(f"Top 10 successful connections:")
+                        print(f"Top 5 days with successful connections:")
                 
                     # If the output needs to be in the file:
                     else:
                         # Open the result file
                         with open("result.txt", "a") as resultfile:
                             # And write the, otherwise printed, statement to the file
-                            resultfile.write("\n\nTop 10 successful connections:")
+                            resultfile.write("\n\nTop 5 days with successful connections:")
         
             # A counter to show the positions
             position = 0
@@ -201,8 +202,6 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
                         # And write the, otherwise printed, statement to the file
                         resultfile.write(f"\n{position}: {result[0]} ({result[1]} {word})")
             
-            
-
     with suppress(AttributeError):
         # If the user chose option 5 than...
         if choice == "5" or choice.openvpnprot:
@@ -739,6 +738,7 @@ def dvdl_top10_inlog(logfile, unsuccessful):
 
     # Grab all keys from the dictionary and put them in a list
     keys = list(sorted_counter.keys())
+    
     # Grab all values from the dictionary and put them in a list
     values = list(sorted_counter.values())
     
@@ -776,17 +776,21 @@ def dvdl_top5_dagen(logfile, unsuccessful):
     # Loop trough all filtered results
     for string in filtered:
         # Extract the date from the string...
-        ip = (re.findall(r"\b(?:\d{4}(?::{1}\d{2}){2})\b", string))[0]  # To test: https://regex101.com/
+        date = (re.findall(r"\b(?:\d{4}(?::{1}\d{2}){2})\b", string))[0]  # To test: https://regex101.com/
+        
+        # Source: https://stackoverflow.com/questions/10624937/convert-datetime-object-to-a-string-of-date-only-in-python
+        # Change the date format
+        date = (datetime.strptime(date, "%Y:%m:%d")).strftime('%A %d %B %Y')
 
-        # If the IP is already in the dictionary than add 1
-        if ip in counter:
-            i = counter.get(ip)
+        # If the date is already in the dictionary than add 1
+        if date in counter:
+            i = counter.get(date)
             i += 1
-            counter.update({ip: i})
+            counter.update({date: i})
 
-        # If the IP isn't in the dictionary than add it
+        # If the date isn't in the dictionary than add it
         else:
-            counter.update({ip: 1})
+            counter.update({date: 1})
 
     # Source: https://stackabuse.com/how-to-sort-dictionary-by-value-in-python/
     
@@ -805,6 +809,7 @@ def dvdl_top5_dagen(logfile, unsuccessful):
 
     # Grab all keys from the dictionary and put them in a list
     keys = list(sorted_counter.keys())
+    
     # Grab all values from the dictionary and put them in a list
     values = list(sorted_counter.values())
     
