@@ -46,11 +46,11 @@ Taal: Python(3)
 
 ## Vereisten
 
-Om dit programma successvol te kunnen starten is python 3.8 of hoger nodig. Python is te downloaden vanaf: https://www.python.org/downloads/. Het programma gebruikt alleen librairies die al standaard bij python ingebouwd zitten. Mochten er toch problemen voorkomen bij het uitvoeren van het programma dan zou er gecontroleerd moeten worden of de volgende packages geïnstalleerd zijn:
+Om dit programma succesvol te kunnen starten is python 3.8 of hoger nodig. Python is te downloaden vanaf: https://www.python.org/downloads/. Het programma gebruikt alleen libraries die al standaard bij python ingebouwd zitten. Mochten er toch problemen voorkomen bij het uitvoeren van het programma dan zou er gecontroleerd moeten worden of de volgende packages geïnstalleerd zijn:
 - `re` voor regex
 - `os` voor het zoeken naar bestanden
 - `argparse` voor het parsen van de argumenten
-- `contextlib` voor het supressen van onnodige error's
+- `contextlib` voor het 'supressen' van onnodige error's
 - `json` voor het werken met het configuratiebestand
 - `datetime` voor het werken met datums
 
@@ -94,7 +94,7 @@ Alle parameters en bijbehorende waardes zijn te vinden met het commando `Logbrow
 Een configuratiebestand kan aangemaakt worden in het menu (optie 10) die met manier 1 getoond wordt. Als het programma via een configuratie bestand gestart wordt, wordt de output altijd weggeschreven naar de file `result.txt`
 
 ### Het aangeven van de locatie van het logbestand
-Het programma gaat er vanuit dat de logfile standaard in dezelfde map als het programma staat en de naam `openvpn.log` heeft. Als dit niet het geval is kan je een andere locatie aangeven met:
+Het programma gaat ervan uit dat de logfile standaard in dezelfde map als het programma staat en de naam `openvpn.log` heeft. Als dit niet het geval is kan je een andere locatie aangeven met:
 1. Door het programma te starten met de `-l {logfile}` parameter
 2. Door de `logfile` optie in het configuratiebestand de waarde van de locatie van de logfile te geven
 
@@ -143,7 +143,7 @@ Om goed de nieuwe IP-adressen te kunnen laten zien heeft het script een bestand 
 Als het programma met het menu gestart is en het pad niet gevonden worden kan, dan wordt er gevraagd om het juiste pad naar het bestand op te geven. Als de knownip-file niet bestaat kan deze aangemaakt worden met optie 9 in het menu.
 
 ### Maken van een nieuw configuratie bestand
-Het maken van een nieuw configuratiebestand kan best ingewikkelt zijn aangezien je precies moet weten welke opties er zijn en welke waarde je die moet geven. Om dat probleem op te kunnen lossen heeft het menu de optie (optie 10) om een nieuw configuratiebestand te configureren. Er wordt dan een reeks vragen gesteld waardoor het configuratiebestand aan je wensen voldoet. 
+Het maken van een nieuw configuratiebestand kan best ingewikkeld zijn aangezien je precies moet weten welke opties er zijn en welke waarde je die moet geven. Om dat probleem op te kunnen lossen heeft het menu de optie (optie 10) om een nieuw configuratiebestand te configureren. Er wordt dan een reeks vragen gesteld waardoor het configuratiebestand aan je wensen voldoet. 
 
 Let op! Als er al een configuratiebestand staat in de map waar ook het programma staat is er een kans aanwezig dat deze overschreven wordt. 
 
@@ -152,13 +152,13 @@ Het programma heeft de mogelijkheid om alle, anders getoonde ouput, weg te schri
 1. Met de `-s` parameter
 
 ### Combineren van parameters
-Het programma heeft veel opties en hierdoor dus veel parameter-combinaties. Vrijwel alle parameters kunnen met elkaar gecombineerd worden. Mocht een combinatie niet kloppen dan kiest het programma de meest logische combinatie. Hieronder staan een aatal voorbeeld combinaties en welke output ze geven:
+Het programma heeft veel opties en hierdoor dus veel parameter-combinaties. Vrijwel alle parameters kunnen met elkaar gecombineerd worden. Mocht een combinatie niet kloppen dan kiest het programma de meest logische combinatie. Hieronder staan een aantal voorbeeld combinaties en welke output ze geven:
 
 Combinatie: `Logbrowser.py -g -l openvpn.log`</br>
 Resultaat: start het programma met een menu en geeft de locatie van de logfile aan
 
 Combinatie: `Logbrowser.py -m -p -d unsuccessful`</br>
-Resultaat: Laat een top 5 dagen zien met de meest unsuccesvolle connecties, laat het aantal connecties zien die niet gemaakt zijn met het OpenVPN-protocol en laat zien welke manangement commando's gebruikt zijn
+Resultaat: Laat een top 5 dagen zien met de meest onsuccesvolle connecties, laat het aantal connecties zien die niet gemaakt zijn met het OpenVPN-protocol en laat zien welke management commando's gebruikt zijn
 
 Combinatie: `Logbrowser.py -g -c configfile`</br>
 Resultaat: Start het programma met het configuratiebestand (negeert de `-g` parameter)
@@ -178,12 +178,12 @@ Naast alle eerder opgenoemde opties zijn er ook nog een paar opties die hierbove
 1. Via optie 11 in het menu
 2. Met de `-h` parameter
 
-- Het sluiten van het programma kan, en is ook alleen nodig, via het menu. Dit is te doen met menu optie 12.
+- Het sluiten van het programma kan, en is ook alleen nodig, via het menu. Dit is te doen met menuoptie 12.
 
 ***
 
 ## Disclaimer
-Het gebruik van het programma is op eigen risico. Ik, de ontwikkelaar, ben niet verantwoordelijk voor iedere vorm van schade die dit product eventueel zou kunnnen verrichten.
+Het gebruik van het programma is op eigen risico. Ik, de ontwikkelaar, ben niet verantwoordelijk voor iedere vorm van schade die dit product eventueel zou kunnen verrichten.
 
 ***
 
