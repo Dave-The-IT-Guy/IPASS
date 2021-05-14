@@ -1,4 +1,7 @@
 #LogfileBrowser
+Student: Dave van der Leek (1777075)\
+Klas: TICT-CSC-V1F\
+Taal: Python(3)
 ***
 
 ##Inhoud:
@@ -181,6 +184,8 @@ Naast alle eerder opgenoemde opties zijn er ook nog een paar opties die hierbove
 
 ## Disclaimer
 Het gebruik van het programma is op eigen risico. Ik, de ontwikkelaar, ben niet verantwoordelijk voor iedere vorm van schade die dit product eventueel zou kunnnen verrichten.
+
+***
 
 ## Gebruikte bronnen
 Om ervoor te kunnen zorgen dat alles werkt zijn de volgende bronnen gebruikt:

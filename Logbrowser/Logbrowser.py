@@ -1,5 +1,5 @@
 # Name: Dave van der Leek (1777075)
-# Class:
+# Class: TICT-CSC-V1F
 # Program: OVPNLogbrowser
 # Description: A program to read logfiles
 version = 0.1
