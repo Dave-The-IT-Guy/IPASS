@@ -1,10 +1,10 @@
-#LogfileBrowser
+# LogfileBrowser
 Student: Dave van der Leek (1777075)\
 Klas: TICT-CSC-V1F\
 Taal: Python(3)
 ***
 
-##Inhoud:
+## Inhoud:
 - Vereisten
 - Installeren
 - Werken met het programma:
