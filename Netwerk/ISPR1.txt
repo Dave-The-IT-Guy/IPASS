@@ -1,1 +1,30 @@
-Hier komen de gebrukte commando's voor ISPR1
+Basis instellingen:
+- sudo passwd
+- configure
+- set system host-name {hostname}
+- set system login user vyos authentication plaintext-password {password}
+- set system login user admin authentication plaintext-password {password}
+- set interfaces ethernet eth5 address dhcp
+- set interfaces ethernet eth5 description internet
+- set service ssh
+- commit
+- save
+- exit
+- ip a (voor het bekijken van het IP)
+
+Open een ssh sessie en plak de volgende regels in de terminal:
+
+configure
+set interfaces ethernet eth0 address 10.58.2.78/30
+set interfaces ethernet eth0 description ISPR1.1_ZR1.3
+set interfaces ethernet eth1 address 10.58.2.94/30
+set interfaces ethernet eth1 description ISPR1.2_ZR2.4
+set interfaces ethernet eth2 address 10.58.2.33/30
+set interfaces ethernet eth2 description ISPR1.3_ISPR3.1
+set interfaces ethernet eth3 address 10.58.2.37/30
+set interfaces ethernet eth3 description ISPR1.4_ISPR4.2
+set interfaces ethernet eth4 address 10.58.2.41/30
+set interfaces ethernet eth4 description ISPR1.5_ISPR2.5
+commit
+save
+exit
