@@ -1,7 +1,7 @@
 Basis instellingen:
 - sudo passwd
 - configure
-- set system host-name {hostname}
+- set system host-name ISPR3
 - set system login user vyos authentication plaintext-password {password}
 - set system login user admin authentication plaintext-password {password}
 - set interfaces ethernet eth5 address dhcp
