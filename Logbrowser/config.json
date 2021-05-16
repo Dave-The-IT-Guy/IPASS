@@ -1,13 +1,8 @@
 {
     "logfile": "openvpn.log",
-    "top10": "False",
-    "top5": "False",
-    "non-ovpn-prot": "False",
+    "top10": "Successful",
+    "top5": "Successful",
+    "non-ovpn-prot": "True",
     "man-coms": "True",
-    "check-ip": [
-        "92.108.151.139",
-        "10.0.0.1"
-    ],
-    "new-ips": "True",
-    "knownip-file": "knownip.txt"
+    "new-ips": "False"
 }

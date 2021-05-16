@@ -15,19 +15,25 @@ from datetime import datetime
 
 
 ##########Arguments##########
-parser = argparse.ArgumentParser(description="A program to browse and analyse OpenVPN logfiles")
-parser.add_argument("-c", "--config-location", help="path to the configuration file", default="", dest="configfile")
-parser.add_argument("-d", "--top5-connection-days", help="shows a top 5 of the days with the most (un)successful connections", choices=["unsuccessful", "successful"], dest="top5")
-parser.add_argument("-g", "--show-menu", help="shows the menu", action="store_true", dest="gui")
-parser.add_argument("-i", "--check-ip", help="checks one or more IP-addresses for attempted connections", nargs="*", dest="checkip")
-parser.add_argument("-k", "--knownipfile-location", help="path to the knownip file", default="knownip.txt", dest="knownip")
-parser.add_argument("-l", "--logfile-location", help="path to the OpenVPN logfile", default="openvpn.log", dest="logfile")
-parser.add_argument("-m", "--used-management-commands", help="shows all used management commands", action="store_true", dest="management")
-parser.add_argument("-n", "--new-ips", help="shows all new IP-addresses", action="store_true", dest="shownip")
-parser.add_argument("-p", "--non-openvpn-protocol", help="shows how many connections weren't made with the OpenVPN protocol", action="store_true", dest="openvpnprot")
-parser.add_argument("-s", "--save-output", help="saves all output to the result.txt file", action="store_true", dest="printer")
-parser.add_argument("-t", "--top10-connection-ips", help="shows a top 10 of the IP-addresses with the most (un)successful connections", choices=["unsuccessful", "successful"], dest="top10")
-arguments = parser.parse_args()
+# Try to define and het the parameters
+try:
+    parser = argparse.ArgumentParser(description="A program to browse and analyse OpenVPN logfiles")
+    parser.add_argument("-c", "--config-location", help="path to the configuration file", default="", dest="configfile")
+    parser.add_argument("-d", "--top5-connection-days", help="shows a top 5 of the days with the most (un)successful connections", choices=["unsuccessful", "successful"], dest="top5")
+    parser.add_argument("-g", "--show-menu", help="shows the menu", action="store_true", dest="gui")
+    parser.add_argument("-i", "--check-ip", help="checks one or more IP-addresses for attempted connections", nargs="*", dest="checkip")
+    parser.add_argument("-k", "--knownipfile-location", help="path to the knownip file", default="knownip.txt", dest="knownip")
+    parser.add_argument("-l", "--logfile-location", help="path to the OpenVPN logfile", default="openvpn.log", dest="logfile")
+    parser.add_argument("-m", "--used-management-commands", help="shows all used management commands", action="store_true", dest="management")
+    parser.add_argument("-n", "--new-ips", help="shows all new IP-addresses", action="store_true", dest="shownip")
+    parser.add_argument("-p", "--non-openvpn-protocol", help="shows how many connections weren't made with the OpenVPN protocol", action="store_true", dest="openvpnprot")
+    parser.add_argument("-s", "--save-output", help="saves all output to the result.txt file", action="store_true", dest="printer")
+    parser.add_argument("-t", "--top10-connection-ips", help="shows a top 10 of the IP-addresses with the most (un)successful connections", choices=["unsuccessful", "successful"], dest="top10")
+    arguments = parser.parse_args()
+
+# If that fails the stop the program
+except:
+    exit()
 
 
 ##########Functions##########
@@ -277,36 +283,36 @@ def dvdl_menu_handler(logfile, choice, **kwargs):
             # Since a valid option was chosen the errormessage doesn't need to be displayed
             error = False
 
-        # If chosen by menu:
-        if choice == "7" and not arguments.printer:
-            # Ask which IP's needs to be checked
-            checkip = input("Type one or more IP-address to check it (space separated): ")
+            # If chosen by menu:
+            if choice == "7" and not arguments.printer:
+                # Ask which IP's needs to be checked
+                checkip = input("Type one or more IP-address to check it (space separated): ")
 
-        # Check if the output needs to be written to a file
-        if not arguments.printer:
-            # Let the user know the program is generating the requested info
-            print("\nGenerating...")
-        
-        if type(checkip) != list:
-            # Make a list of all the given IP's
-            checkip = checkip.split(" ")
-        
-        # Loop trough the IP's and...
-        for ip in checkip:
-            # Call the function
-            results = dvdl_check_ip(logfile, ip)
+            # Check if the output needs to be written to a file
+            if not arguments.printer:
+                # Let the user know the program is generating the requested info
+                print("\nGenerating...")
 
-            # If the IP is valid and the results need to be printed than show the results
-            if results != None and not arguments.printer:
-                # Show the result to the user
-                print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
+            if type(checkip) != list:
+                # Make a list of all the given IP's
+                checkip = checkip.split(" ")
 
-            # If the IP is valid and output needs to be written to a file...
-            elif results != None:
-                # Open the file
-                with open("result.txt", "a") as resultfile:
-                    # And write the, otherwise printed, statement to the file
-                    resultfile.write(f"\n\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}")
+            # Loop trough the IP's and...
+            for ip in checkip:
+                # Call the function
+                results = dvdl_check_ip(logfile, ip)
+
+                # If the IP is valid and the results need to be printed than show the results
+                if results != None and not arguments.printer:
+                    # Show the result to the user
+                    print(f"\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}\n")
+
+                # If the IP is valid and output needs to be written to a file...
+                elif results != None:
+                    # Open the file
+                    with open("result.txt", "a") as resultfile:
+                        # And write the, otherwise printed, statement to the file
+                        resultfile.write(f"\n\nChecked IP: {results[0]}\nSuccessful attempts: {results[1]}\nUnsuccessful attempts: {results[2]}\nTotal attempts: {results[3]}")
 
     with suppress(AttributeError):
         if choice == "8" or choice.shownip:
@@ -636,7 +642,7 @@ def dvdl_filter_logfile(file, **kwargs):
             # Check if the file looks like a logfile
             if not re.findall(r"\d{4}(:\d{2}){2}-(\d{2}:){2}\d{2} \w{1,} openvpn\[\d{1,5}]:", logfile.readline()):
                 
-                # Comment here
+                # Check if the output needs to be written to a file
                 if not arguments.printer:
                     # If the identifier isn't present let the user choose another file
                     print("This doesn't seem to be an OpenVPN-logfile. Please select another file")
@@ -912,7 +918,8 @@ def dvdl_check_ip(logfile, ip):
             # Open the file
             with open("result.txt", "a") as resultfile:
                 # And write the, otherwise printed, statement to the file
-                resultfile.write("\n\nNo valid IP provided\n\n")
+                resultfile.write("\n\nNo valid IP provided")
+            exit()
                 
         # Revert the list to a single IP
         ip = ip[0]
@@ -954,7 +961,9 @@ def dvdl_show_all_new_ips(logfile, ipfile):
                     # Open the file
                     with open("result.txt", "a") as resultfile:
                         # And write the, otherwise printed, statement to the file
-                        resultfile.write("\n\nThe identifier of the knownipfile isn't correct\n\n")
+                        resultfile.write("\n\nThe identifier of the knownipfile isn't correct")
+                    # Stop the program
+                    exit()
             
             # If the identifier is present stop the loop
             else:
@@ -1070,7 +1079,7 @@ def dvdl_check_file_location(file, filename, **kwargs):
         # Open the file
         with open("result.txt", "a") as resultfile:
             # And write the, otherwise printed, statement to the file
-            resultfile.write(f"\n\nCannot access {filename}\n\n")
+            resultfile.write(f"\n\nCannot access {filename}")
 
         # Exit the program
         exit()
@@ -1183,20 +1192,40 @@ def dvdl_config_handler(configfile):
 ##########Run at boot code##########
 
 try:
+    # Check if the output needs to be written to a file
+    if arguments.printer:
+        #Write the date and time to the file
+        with open("result.txt", "a") as resultfile:
+
+            # And write the date and time to the top of the document
+            resultfile.write("\n\n\n====================================================================================================\n")
+            # And write the date and time to the top of the document
+            resultfile.write(f"==================================={(datetime.today()).strftime('%A %d %B %Y at %H:%M:%S')}===================================\n")
+            resultfile.write("====================================================================================================")
+
     # If the program is started with the configfile
     if arguments.configfile != "":
         # Make sure all output gets redirected to a file
         arguments.printer = True
-    
+
+        # Write the date and time to the file
+        with open("result.txt", "a") as resultfile:
+            # And write the date and time to the top of the document
+            resultfile.write("\n\n\n====================================================================================================\n")
+            # And write the date and time to the top of the document
+            resultfile.write(f"==================================={(datetime.today()).strftime('%A %d %B %Y at %H:%M:%S')}===================================\n")
+            resultfile.write("====================================================================================================")
+
         # Call the function that handles the configfile
         dvdl_config_handler(arguments.configfile)
-        
+
         # And stop the program
         exit()
-    
+
+
     # Check if the logfile location is correct
     logfile = dvdl_check_file_location(arguments.logfile, "OpenVPN-logfile")
-    
+
     # Check if the logfile is actually a logfile
     while True:
         # Check if the identifier is present
@@ -1244,27 +1273,11 @@ except KeyboardInterrupt:
         # Print the message
         print("\n\nOperation cancelled by user")
 
-    # If the output needs to be written to a file...
-    else:
-        # Open the file
-        with open("result.txt", "a") as resultfile:
-            # And write the, otherwise printed, statement to the file
-            resultfile.write("\n\nOperation cancelled by user\n\n")
-
-            # Write a breakline to the file to make it more organised
-            resultfile.write("\n====================================================================================================\n")
-
     # And stop the program
     exit()
 
 # To make the exit-statements in the code work without unnecessary messages
 except SystemExit:
-    # If the output needs to be written to a file...
-    if arguments.printer:
-        # Open the file
-        with open("result.txt", "a") as resultfile:
-            # Write a breakline to the file to make it more organised
-            resultfile.write("\n====================================================================================================\n")
     exit()
 
 # If an unknown error occurred...
@@ -1279,15 +1292,5 @@ except:
         # Open the file
         with open("result.txt", "a") as resultfile:
             # And write the, otherwise printed, statement to the file
-            resultfile.write("\n\nSomething went wrong\n\n")
-
-            # Write a breakline to the file to make it more organised
-            resultfile.write("\n====================================================================================================\n")
+            resultfile.write("\n\n\nSomething went wrong")
     exit()
-
-# If the output needs to be written to a file...
-if arguments.printer:
-    # Open the file
-    with open("result.txt", "a") as resultfile:
-        # Write a breakline to the file to make it more organised
-        resultfile.write("\n\n\n====================================================================================================\n")
