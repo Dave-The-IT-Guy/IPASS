@@ -39,6 +39,7 @@ set protocols ospfv3 area 1 interface eth1
 set protocols ospfv3 area 1 interface bond0
 set protocols ospfv3 area 1 interface eth4
 set protocols ospfv3 parameters router-id 192.168.193.224
+set protocols static route 0.0.0.0/0 next-hop '192.168.192.1'
 set nat source rule 10 outbound-interface 'eth5'
 set nat source rule 10 source address '10.58.2.48/29'
 set nat source rule 10 translation address 'masquerade'
