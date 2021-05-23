@@ -32,15 +32,16 @@ set protocol ospf area 0 network 10.58.2.32/29
 set protocol ospf area 0 network 10.58.2.76/30
 set protocol ospf area 0 network 10.58.2.80/30
 set protocol ospf area 0 network 10.58.2.64/30
-set protocol ospf area 0 network 192.168.192.0/24
 set protocol ospf auto-cost reference-bandwidth 1000
 set protocol ospf parameters router-id 192.168.192.71
 set protocols ospfv3 area 1 interface bond0
 set protocols ospfv3 area 1 interface eth2
 set protocols ospfv3 area 1 interface eth3
 set protocols ospfv3 area 1 interface eth4
-set protocols ospfv3 area 1 interface eth5
 set protocols ospfv3 parameters router-id 192.168.193.71
+set nat source rule 10 outbound-interface 'eth5'
+set nat source rule 10 source address '10.58.2.32/29'
+set nat source rule 10 translation address 'masquerade' 
 commit
 save
 exit
