@@ -16,8 +16,8 @@ configure
 set interfaces bonding bond0 mode broadcast
 set interfaces bonding bond0 member interface eth0
 set interfaces bonding bond0 member interface eth1
-set interfaces bonding bond0 address 10.58.2.34/29
-set interfaces bonding bond0 address FD58:CAC6:B87C:AD32::34/64
+set interfaces bonding bond0 address 10.58.2.36/29
+set interfaces bonding bond0 address FD58:CAC6:B87C:AD32::36/64
 set interfaces ethernet eth2 address 10.58.2.77/30
 set interfaces ethernet eth2 address FD58:CAC6:B87C:AD76::77/64
 set interfaces ethernet eth2 description ISPR2.3-ISPR3.2
