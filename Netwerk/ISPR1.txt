@@ -1,9 +1,7 @@
 Basis instellingen:
-- sudo passwd
 - configure
 - set system host-name ISPR1
-- set system login user vyos authentication plaintext-password {password}
-- set system login user admin authentication plaintext-password {password}
+- set system login user admin authentication plaintext-password Welkom01!
 - set interfaces ethernet eth5 address dhcp
 - set interfaces ethernet eth5 description internet
 - set service ssh
@@ -15,35 +13,36 @@ Basis instellingen:
 Open een ssh sessie en plak de volgende regels in de terminal:
 
 configure
-set interfaces ethernet eth0 address 10.58.2.78/30
-set interfaces ethernet eth0 address FD58:CAC6:B87C:AD76::78/64
-set interfaces ethernet eth0 description ISPR1.1_ZR1.3
-set interfaces ethernet eth1 address 10.58.2.94/30
-set interfaces ethernet eth1 address FD58:CAC6:B87C:AD92::94/64
-set interfaces ethernet eth1 description ISPR1.2_ZR2.4
-set interfaces ethernet eth2 address 10.58.2.33/30
-set interfaces ethernet eth2 address FD58:CAC6:B87C:AD32::33/64
-set interfaces ethernet eth2 description ISPR1.3_ISPR3.1
-set interfaces ethernet eth3 address 10.58.2.37/30
-set interfaces ethernet eth3 address FD58:CAC6:B87C:AD36::37/64
-set interfaces ethernet eth3 description ISPR1.4_ISPR4.2
-set interfaces ethernet eth4 address 10.58.2.41/30
-set interfaces ethernet eth4 address FD58:CAC6:B87C:AD40::41/64
-set interfaces ethernet eth4 description ISPR1.5_ISPR2.5
+set interfaces bonding bond0 mode broadcast
+set interfaces bonding bond0 member interface eth0
+set interfaces bonding bond0 member interface eth1
+set interfaces bonding bond0 address 10.58.2.28/29
+set interfaces bonding bond0 address FD58:CAC6:B87C:AD24::26/64
+set interfaces ethernet eth2 address 10.58.2.69/30
+set interfaces ethernet eth2 address FD58:CAC6:B87C:AD68::69/64
+set interfaces ethernet eth2 description ISPR1.3-ISPR3.1
+set interfaces ethernet eth3 address 10.58.2.73/30
+set interfaces ethernet eth3 address FD58:CAC6:B87C:AD72::73/64
+set interfaces ethernet eth3 description ISPR1.4-ISPR4.1
+set interfaces ethernet eth4 address 10.58.2.65/30
+set interfaces ethernet eth4 address FD58:CAC6:B87C:AD64::65/64
+set interfaces ethernet eth4 description ISPR1.5-ISPR2.5
 set interfaces ethernet eth5 address dhcpv6
-set protocol ospf area 0 network 10.58.2.76/30
-set protocol ospf area 0 network 10.58.2.92/30
-set protocol ospf area 0 network 10.58.2.32/30
-set protocol ospf area 0 network 10.58.2.36/30
-set protocol ospf area 0 network 10.58.2.40/30
+set protocol ospf area 0 network 10.58.2.24/29
+set protocol ospf area 0 network 10.58.2.68/30
+set protocol ospf area 0 network 10.58.2.72/30
+set protocol ospf area 0 network 10.58.2.64/30
 set protocol ospf auto-cost reference-bandwidth 1000
 set protocol ospf parameters router-id 192.168.192.113
-set protocols ospfv3 area 1 interface eth0
-set protocols ospfv3 area 1 interface eth1
+set protocols ospfv3 area 1 interface bond0
 set protocols ospfv3 area 1 interface eth2
 set protocols ospfv3 area 1 interface eth3
 set protocols ospfv3 area 1 interface eth4
 set protocols ospfv3 parameters router-id 192.168.193.113
+set protocols static route 0.0.0.0/0 next-hop 192.168.192.1'
+set nat source rule 10 outbound-interface 'eth5'
+set nat source rule 10 source address '10.58.2.24/29'
+set nat source rule 10 translate address 'masquerade' 
 commit
 save
 exit
