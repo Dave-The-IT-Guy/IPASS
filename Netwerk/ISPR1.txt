@@ -48,11 +48,6 @@ set nat dest rule 5 dest port '11194'
 set nat dest rule 5 inbound-interface 'eth5'
 set nat dest rule 5 prot 'tcp'
 set nat dest rule 5 translation address '10.58.2.25'
-set nat dest rule 4 description 'Website'
-set nat dest rule 4 dest port '443'
-set nat dest rule 4 inbound-interface 'eth5'
-set nat dest rule 4 prot 'tcp'
-set nat dest rule 4 translation address '10.58.2.25'
 commit
 save
 exit
